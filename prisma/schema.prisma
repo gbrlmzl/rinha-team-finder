@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Lane {
+  TOP
+  JUNGLE
+  MID
+  ADC
+  SUPPORT
+  FILL
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  freeAgents FreeAgent[]
+  equipes    Equipe[]
+}
+
+model FreeAgent {
+  id             String   @id @default(cuid())
+  nickname       String
+  lanePrincipal  Lane
+  laneSecundaria Lane
+  contato        String
+  createdAt      DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Equipe {
+  id             String   @id @default(cuid())
+  nome           String
+  contatoCapitao String
+  laneCapitao    Lane
+  vagasLanes     Lane[]
+  createdAt      DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,14 @@
+import { getServerSession } from 'next-auth';
+import { authOptions } from './auth';
+import { NextResponse } from 'next/server';
+
+export async function getSessionOrUnauthorized() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) {
+    return {
+      session: null,
+      error: NextResponse.json({ erro: 'Não autenticado' }, { status: 401 }),
+    };
+  }
+  return { session, error: null };
+}
