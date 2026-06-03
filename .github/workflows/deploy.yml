@@ -32,27 +32,14 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE }}
-          build-args: |
-            DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}
-            DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
 
       - name: Deploy no servidor
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: dsc.rodrigor.com
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_DEPLOY_KEY }}
-          script: |
-            docker pull ${{ env.IMAGE }}
-            docker stop feche-seu-time || true
-            docker rm feche-seu-time || true
-            docker run -d \
-              --name feche-seu-time \
-              --restart unless-stopped \
-              -p 3000:3000 \
-              -e DATABASE_URL="postgresql://${{ secrets.DATABASE_USERNAME }}:${{ secrets.DATABASE_PASSWORD }}@localhost:5432/feche_seu_time" \
-              -e NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}" \
-              -e NEXTAUTH_URL="https://dsc.rodrigor.com" \
-              ${{ env.IMAGE }}
-            docker exec feche-seu-time npx prisma migrate deploy
-            docker exec feche-seu-time npx prisma db seed
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_DEPLOY_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          # Envia "actor:token" ao servidor. A chave é travada (command=),
+          # então o servidor usa esse token efêmero só para puxar a imagem do GHCR.
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+            "${{ secrets.SSH_USERNAME }}@dsc.rodrigor.com" \
+            "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}"
