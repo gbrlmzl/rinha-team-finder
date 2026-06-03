@@ -130,8 +130,8 @@ export function PositionSelector({
 
       {/* Dropdown menu */}
       {open && (
-        <div className="absolute z-50 top-full mt-2 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-700 rounded-xl p-2 shadow-xl">
-          <div className="flex flex-row gap-1">
+        <div className="absolute z-50 top-full mt-2 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-2rem)] bg-zinc-900 border border-zinc-700 rounded-xl p-2 shadow-xl">
+          <div className="grid grid-cols-3 gap-1 sm:flex sm:flex-row">
             {PLAYER_POSITIONS.map((position, index) => {
               const isLaneDisabled = disabledLanes.includes(position.key);
               const isSelected = value === position.key;

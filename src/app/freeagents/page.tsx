@@ -1,14 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { FreeAgentData } from '@/types';
 import { FreeAgentInfoResume } from '@/components/FreeAgentInfoResume';
-import { Navbar } from '@/components/Navbar';
 
 export default function FreeAgentsPage() {
-  const { data: session } = useSession();
   const [freeAgents, setFreeAgents] = useState<FreeAgentData[]>([]);
   const [carregando, setCarregando] = useState(true);
 
@@ -30,9 +27,7 @@ export default function FreeAgentsPage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col">
-      <Navbar />
-
-      <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-8">
+      <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-8 pt-16 sm:pt-20">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-white">Free Agents Disponíveis</h1>
           <Link

@@ -3,7 +3,6 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Navbar } from '@/components/Navbar';
 import { CadastroFreeAgent } from '@/components/modals/CadastroFreeAgent';
 import { CadastroEquipeVaga } from '@/components/modals/CadastroEquipeVaga';
 
@@ -24,9 +23,7 @@ export default function InicioPage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col">
-      <Navbar />
-
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-12">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-12 pt-16 sm:pt-20">
         {/* Hero */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
