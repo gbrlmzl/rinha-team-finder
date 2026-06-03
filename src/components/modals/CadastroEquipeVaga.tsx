@@ -95,12 +95,11 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
         <div className="space-y-4">
           {/* Nome da equipe */}
           <div>
-            <label className="block text-sm text-zinc-400 mb-1">Nome da Equipe</label>
             <input
               type="text"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
-              placeholder="Nome do time"
+              placeholder="Nome da Equipe"
               className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-600 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
             />
           </div>
@@ -120,14 +119,17 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
           {/* Lane do capitão */}
           <div>
             <label className="block text-sm text-zinc-400 mb-2">Lane do Capitão</label>
-            <PositionSelector
-              value={laneCapitao}
-              onChange={(lane) => {
-                setLaneCapitao(lane);
-                // Remover vagas que conflitem com nova lane do capitão
-                setVagasLanes((prev) => prev.filter((v) => v !== lane));
-              }}
-            />
+            <div className="flex justify-center">
+              <PositionSelector
+                value={laneCapitao}
+                onChange={(lane) => {
+                  setLaneCapitao(lane);
+                  // Remover vagas que conflitem com nova lane do capitão
+                  setVagasLanes((prev) => prev.filter((v) => v !== lane));
+                }}
+                variant="radial"
+              />
+            </div>
           </div>
 
           {/* Separador */}
@@ -161,11 +163,14 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
             {vagasLanes.length < 4 && (
               <div className="mt-3">
                 {adicionandoVaga ? (
-                  <PositionSelector
-                    value={null}
-                    onChange={handleAdicionarVaga}
-                    disabledLanes={lanesOcupadas}
-                  />
+                  <div className="flex justify-center">
+                    <PositionSelector
+                      value={null}
+                      onChange={handleAdicionarVaga}
+                      disabledLanes={lanesOcupadas}
+                      variant="radial"
+                    />
+                  </div>
                 ) : (
                   <button
                     onClick={() => setAdicionandoVaga(true)}

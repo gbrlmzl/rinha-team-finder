@@ -1,14 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { FreeAgentData } from '@/types';
 import { FreeAgentInfoResume } from '@/components/FreeAgentInfoResume';
-import { Navbar } from '@/components/Navbar';
 
 export default function FreeAgentsPage() {
-  const { data: session } = useSession();
   const [freeAgents, setFreeAgents] = useState<FreeAgentData[]>([]);
   const [carregando, setCarregando] = useState(true);
 
@@ -29,46 +25,35 @@ export default function FreeAgentsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col">
-      <Navbar />
+    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-8 pt-16 sm:pt-20">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-white sm:text-3xl">Free Agents Disponíveis</h1>
+        <p className="mt-2 text-sm text-zinc-400">Veja os jogadores disponíveis e entre em contato.</p>
+      </div>
 
-      <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-white">Free Agents Disponíveis</h1>
-          <Link
-            href="/inicio"
-            className="text-sm text-zinc-400 hover:text-zinc-300 transition-colors"
-          >
-            ← Voltar
-          </Link>
+      {carregando ? (
+        <div className="py-12 text-center text-zinc-400">Carregando...</div>
+      ) : freeAgents.length === 0 ? (
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 py-12 text-center">
+          <p className="text-lg text-zinc-200">Nenhum free agent disponível no momento</p>
+          <p className="mt-2 text-sm text-zinc-500">Seja o primeiro a se cadastrar!</p>
         </div>
-
-        {carregando ? (
-          <div className="text-center py-12">
-            <p className="text-zinc-400">Carregando...</p>
-          </div>
-        ) : freeAgents.length === 0 ? (
-          <div className="text-center py-12 bg-zinc-900/50 border border-zinc-700/50 rounded-xl">
-            <p className="text-zinc-400 text-lg">Nenhum free agent disponível no momento</p>
-            <p className="text-zinc-500 text-sm mt-2">Seja o primeiro a se cadastrar!</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {freeAgents.map((fa) => (
-              <FreeAgentInfoResume
-                key={fa.id}
-                id={fa.id}
-                nickname={fa.nickname}
-                lanePrincipal={fa.lanePrincipal}
-                laneSecundaria={fa.laneSecundaria}
-                contato={fa.contato}
-                userId={fa.userId}
-                onDelete={fetchFreeAgents}
-              />
-            ))}
-          </div>
-        )}
-      </main>
-    </div>
+      ) : (
+        <div className="space-y-3">
+          {freeAgents.map((fa) => (
+            <FreeAgentInfoResume
+              key={fa.id}
+              id={fa.id}
+              nickname={fa.nickname}
+              lanePrincipal={fa.lanePrincipal}
+              laneSecundaria={fa.laneSecundaria}
+              contato={fa.contato}
+              userId={fa.userId}
+              onDelete={fetchFreeAgents}
+            />
+          ))}
+        </div>
+      )}
+    </main>
   );
 }
