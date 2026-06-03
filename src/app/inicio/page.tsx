@@ -74,6 +74,19 @@ export default function InicioPage() {
           </div>
         </button>
 
+        <button
+          id="btn-buscar-equipes"
+          onClick={() => router.push('/equipes')}
+          className="group relative overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900/50 p-6 text-left transition-all hover:border-cyan-500/50 hover:bg-zinc-800/50"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-600/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="relative">
+            <div className="mb-2 text-2xl">🔎</div>
+            <h3 className="mb-1 font-semibold text-white">Buscar equipes</h3>
+            <p className="text-sm text-zinc-400">Veja times com vagas abertas</p>
+          </div>
+        </button>
+
         <a
           id="btn-grupo-whatsapp"
           href="https://chat.whatsapp.com/LRSVVOsbRae3i1uRHC2xpl"
