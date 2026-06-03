@@ -63,7 +63,7 @@ export function CadastroFreeAgent({ open, onClose, onSuccess }: CadastroFreeAgen
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl relative">
+      <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl relative overflow-visible">
         {/* Botão fechar */}
         <button
           onClick={onClose}
@@ -77,35 +77,35 @@ export function CadastroFreeAgent({ open, onClose, onSuccess }: CadastroFreeAgen
         <div className="space-y-4">
           {/* Nickname */}
           <div>
-            <label className="block text-sm text-zinc-400 mb-1">Nickname</label>
             <input
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              placeholder="Seu nick no LoL"
+              placeholder="Nickname"
               className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-600 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
             />
           </div>
 
-          {/* Lane Principal */}
+          {/* Lanes */}
           <div>
-            <label className="block text-sm text-zinc-400 mb-2">Lane Principal</label>
-            <div className="flex justify-center">
-              <PositionSelector
-                value={lanePrincipal}
-                onChange={setLanePrincipal}
-              />
-            </div>
-          </div>
-
-          {/* Lane Secundária */}
-          <div>
-            <label className="block text-sm text-zinc-400 mb-2">Lane Secundária</label>
-            <div className="flex justify-center">
-              <PositionSelector
-                value={laneSecundaria}
-                onChange={setLaneSecundaria}
-              />
+            <label className="block text-sm text-zinc-400 mb-3 text-center">Lanes</label>
+            <div className="flex justify-center items-start gap-10">
+              <div className="flex flex-col items-center gap-1.5">
+                <span className="text-xs text-zinc-500 font-medium">Principal</span>
+                <PositionSelector
+                  value={lanePrincipal}
+                  onChange={setLanePrincipal}
+                  variant="radial"
+                />
+              </div>
+              <div className="flex flex-col items-center gap-1.5">
+                <span className="text-xs text-zinc-500 font-medium">Secundária</span>
+                <PositionSelector
+                  value={laneSecundaria}
+                  onChange={setLaneSecundaria}
+                  variant="radial"
+                />
+              </div>
             </div>
           </div>
 

@@ -95,12 +95,11 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
         <div className="space-y-4">
           {/* Nome da equipe */}
           <div>
-            <label className="block text-sm text-zinc-400 mb-1">Nome da Equipe</label>
             <input
               type="text"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
-              placeholder="Nome do time"
+              placeholder="Nome da Equipe"
               className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-600 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
             />
           </div>
@@ -128,6 +127,7 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
                   // Remover vagas que conflitem com nova lane do capitão
                   setVagasLanes((prev) => prev.filter((v) => v !== lane));
                 }}
+                variant="radial"
               />
             </div>
           </div>
@@ -168,6 +168,7 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
                       value={null}
                       onChange={handleAdicionarVaga}
                       disabledLanes={lanesOcupadas}
+                      variant="radial"
                     />
                   </div>
                 ) : (
