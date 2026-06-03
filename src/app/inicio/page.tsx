@@ -80,7 +80,7 @@ export default function InicioPage() {
 
           <a
             id="btn-grupo-whatsapp"
-            href="https://chat.whatsapp.com/placeholder-rinha-campus-iv"
+            href="https://chat.whatsapp.com/LRSVVOsbRae3i1uRHC2xpl"
             target="_blank"
             rel="noopener noreferrer"
             className="group relative overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900/50 p-6 text-left transition-all hover:border-emerald-500/50 hover:bg-zinc-800/50"
