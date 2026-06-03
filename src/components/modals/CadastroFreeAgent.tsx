@@ -90,19 +90,23 @@ export function CadastroFreeAgent({ open, onClose, onSuccess }: CadastroFreeAgen
           {/* Lane Principal */}
           <div>
             <label className="block text-sm text-zinc-400 mb-2">Lane Principal</label>
-            <PositionSelector
-              value={lanePrincipal}
-              onChange={setLanePrincipal}
-            />
+            <div className="flex justify-center">
+              <PositionSelector
+                value={lanePrincipal}
+                onChange={setLanePrincipal}
+              />
+            </div>
           </div>
 
           {/* Lane Secundária */}
           <div>
             <label className="block text-sm text-zinc-400 mb-2">Lane Secundária</label>
-            <PositionSelector
-              value={laneSecundaria}
-              onChange={setLaneSecundaria}
-            />
+            <div className="flex justify-center">
+              <PositionSelector
+                value={laneSecundaria}
+                onChange={setLaneSecundaria}
+              />
+            </div>
           </div>
 
           {/* Contato */}
