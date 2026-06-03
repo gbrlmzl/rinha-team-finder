@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { EquipeData } from '@/types';
 import { EquipeInfoResume } from '@/components/EquipeInfoResume';
 
@@ -27,15 +26,9 @@ export default function EquipesPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-8 pt-16 sm:pt-20">
-      <div className="mb-8 flex items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-white sm:text-3xl">Equipes com vagas</h1>
-          <p className="mt-2 text-sm text-zinc-400">Veja times procurando jogadores e entre em contato com o capitão.</p>
-        </div>
-
-        <Link href="/inicio" className="rounded-full border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:bg-zinc-900">
-          Voltar
-        </Link>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-white sm:text-3xl">Equipes com vagas</h1>
+        <p className="mt-2 text-sm text-zinc-400">Veja times procurando jogadores e entre em contato com o capitão.</p>
       </div>
 
       {carregando ? (

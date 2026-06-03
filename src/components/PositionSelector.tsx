@@ -131,7 +131,7 @@ export function PositionSelector({
       {/* Dropdown menu */}
       {open && (
         <div className="absolute z-50 top-full mt-2 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-2rem)] bg-zinc-900 border border-zinc-700 rounded-xl p-2 shadow-xl">
-          <div className="grid grid-cols-3 gap-1 sm:flex sm:flex-row">
+          <div className="grid grid-cols-2 gap-1 min-[400px]:grid-cols-3 sm:grid-cols-6">
             {PLAYER_POSITIONS.map((position, index) => {
               const isLaneDisabled = disabledLanes.includes(position.key);
               const isSelected = value === position.key;
@@ -146,7 +146,7 @@ export function PositionSelector({
                   title={position.label}
                   disabled={isLaneDisabled}
                   className={`
-                    flex items-center justify-center w-12 h-12 rounded-lg border-2 transition-all duration-200
+                    flex flex-col items-center justify-center gap-1 rounded-lg border-2 px-3 py-2 transition-all duration-200
                     ${isSelected ? 'bg-blue-600 border-blue-600' : 'bg-transparent border-zinc-600'}
                     ${isLaneDisabled ? 'opacity-30 cursor-not-allowed' : 'hover:bg-blue-600 hover:border-blue-600 cursor-pointer'}
                     focus-visible:outline focus-visible:outline-2 focus-visible:outline-white
@@ -160,6 +160,9 @@ export function PositionSelector({
                       style={{ objectFit: 'contain', filter: isLaneDisabled ? 'grayscale(100%)' : 'none' }}
                     />
                   </div>
+                  <span className={`text-xs font-medium leading-none ${isSelected ? 'text-white' : isLaneDisabled ? 'text-zinc-500' : 'text-zinc-300'}`}>
+                    {position.label}
+                  </span>
                 </button>
               );
             })}

@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${inter.className} bg-zinc-950 text-white antialiased`}>
+      <body className={`${inter.className} min-h-screen flex flex-col bg-zinc-950 text-white antialiased`}>
         <Providers>
           <Navbar />
           {children}
