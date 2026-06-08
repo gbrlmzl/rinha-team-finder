@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: feche_seu_time
+      POSTGRES_DB: eq16
     ports:
       - "5432:5432"
     volumes:
@@ -17,7 +17,7 @@ services:
     ports:
       - "8116:3000"
     environment:
-      DATABASE_URL: postgresql://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@db:5432/feche_seu_time?maximum_pool_size=5
+      DATABASE_URL: postgresql://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@db:5432/eq16?maximum_pool_size=5
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       NEXTAUTH_URL: ${NEXTAUTH_URL}
     depends_on:
