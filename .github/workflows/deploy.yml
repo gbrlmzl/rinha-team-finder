@@ -24,7 +24,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build e push da imagem
         uses: docker/build-push-action@v5
@@ -33,19 +33,20 @@ jobs:
           push: true
           tags: ${{ env.IMAGE }}
 
-      - name: Deploy no servidor
+      - name: Deploy no servidor e rodar migrations
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_DEPLOY_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
+          
           # Envia "actor:token" ao servidor. A chave é travada (command=),
           # então o servidor usa esse token efêmero só para puxar a imagem do GHCR.
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
             "${{ secrets.SSH_USERNAME }}@dsc.rodrigor.com" \
-            "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Rodar migrations no servidor
-        run: |
+            "${{ github.actor }}:${{ secrets.GHCR_TOKEN }}"
+          
+          # Aguarda deploy completar e executa migrations
+          sleep 10
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
             "${{ secrets.SSH_USERNAME }}@dsc.rodrigor.com" \
             "docker exec feche-seu-time-app npx prisma migrate deploy"
