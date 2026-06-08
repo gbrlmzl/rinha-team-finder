@@ -33,7 +33,7 @@ jobs:
           push: true
           tags: ${{ env.IMAGE }}
 
-      - name: Deploy no servidor e rodar migrations
+      - name: Deploy no servidor
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_DEPLOY_KEY }}" > ~/.ssh/deploy_key
@@ -44,9 +44,3 @@ jobs:
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
             "${{ secrets.SSH_USERNAME }}@dsc.rodrigor.com" \
             "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}"
-          
-          # Aguarda deploy completar e executa migrations
-          sleep 10
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
-            "${{ secrets.SSH_USERNAME }}@dsc.rodrigor.com" \
-            "docker exec feche-seu-time-app npx prisma migrate deploy"
