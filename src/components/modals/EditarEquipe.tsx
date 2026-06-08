@@ -7,28 +7,35 @@ import { PositionSelector } from '@/components/PositionSelector';
 import { PLAYER_POSITIONS } from '@/constants/positions';
 import { ModalSucesso } from '@/components/modals/ModalSucesso';
 
-interface CadastroEquipeVagaProps {
+interface EditarEquipeProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  equipe: {
+    id: string;
+    nome: string;
+    contatoCapitao: string;
+    laneCapitao: Lane;
+    vagasLanes: Lane[];
+  };
 }
 
-export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeVagaProps) {
-  const [nome, setNome] = useState('');
-  const [contatoCapitao, setContatoCapitao] = useState('');
-  const [laneCapitao, setLaneCapitao] = useState<Lane | null>(null);
-  const [vagasLanes, setVagasLanes] = useState<Lane[]>([]);
-  const [adicionandoVaga, setAdicionandoVaga] = useState(false);
-  const [erro, setErro] = useState('');
-  const [enviando, setEnviando] = useState(false);
-  const [mostrarSucesso, setMostrarSucesso] = useState(false);
-
+export function EditarEquipe({ open, onClose, onSuccess, equipe }: EditarEquipeProps) {
   const formatarTelefone = (valor: string) => {
     const v = valor.replace(/\D/g, '');
     if (v.length <= 2) return v;
     if (v.length <= 7) return `(${v.slice(0, 2)}) ${v.slice(2)}`;
     return `(${v.slice(0, 2)}) ${v.slice(2, 7)}-${v.slice(7, 11)}`;
   };
+
+  const [nome, setNome] = useState(equipe.nome);
+  const [contatoCapitao, setContatoCapitao] = useState(formatarTelefone(equipe.contatoCapitao));
+  const [laneCapitao, setLaneCapitao] = useState<Lane | null>(equipe.laneCapitao);
+  const [vagasLanes, setVagasLanes] = useState<Lane[]>([...equipe.vagasLanes]);
+  const [adicionandoVaga, setAdicionandoVaga] = useState(false);
+  const [erro, setErro] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const [mostrarSucesso, setMostrarSucesso] = useState(false);
 
   if (!open && !mostrarSucesso) return null;
 
@@ -46,20 +53,19 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
 
     setEnviando(true);
     try {
-      const res = await fetch('/api/equipes', {
-        method: 'POST',
+      const res = await fetch(`/api/equipes/${equipe.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nome: nome.trim(), contatoCapitao: contatoCapitao.trim(), laneCapitao, vagasLanes }),
       });
-      if (!res.ok) { const data = await res.json(); setErro(data.erro || 'Erro ao cadastrar.'); return; }
+      if (!res.ok) { const data = await res.json(); setErro(data.erro || 'Erro ao atualizar.'); return; }
 
-      setNome(''); setContatoCapitao(''); setLaneCapitao(null); setVagasLanes([]);
-      onSuccess(); onClose(); setMostrarSucesso(true);
+      onSuccess(); setMostrarSucesso(true);
     } catch { setErro('Erro de conexão.'); } finally { setEnviando(false); }
   };
 
   if (mostrarSucesso) {
-    return <ModalSucesso open={mostrarSucesso} onClose={() => setMostrarSucesso(false)} titulo="Equipe cadastrada!" mensagem="Sua equipe agora está visível para jogadores buscando times." />;
+    return <ModalSucesso open={mostrarSucesso} onClose={() => setMostrarSucesso(false)} titulo="Equipe atualizada!" mensagem="As alterações foram salvas com sucesso." />;
   }
 
   return (
@@ -69,7 +75,7 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
 
-        <h2 className="font-display text-2xl font-extrabold uppercase tracking-[-0.04em] text-text-main mb-6">Cadastrar Equipe</h2>
+        <h2 className="font-display text-2xl font-extrabold uppercase tracking-[-0.04em] text-text-main mb-6">Editar Equipe</h2>
 
         <div className="space-y-4">
           <div>
@@ -92,7 +98,9 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
           </div>
 
           <div className="border-t border-cyan/10 pt-4">
-            <label className="block text-xs font-bold uppercase tracking-widest text-text-muted mb-3">Vagas Abertas</label>
+            <label className="block text-xs font-bold uppercase tracking-widest text-text-muted mb-1">Vagas Abertas</label>
+            <p className="text-xs text-text-muted/60 mb-3 font-light">Remova vagas que já foram preenchidas ou adicione novas.</p>
+
             <div className="space-y-2">
               {vagasLanes.map((lane, index) => {
                 const pos = PLAYER_POSITIONS.find((p) => p.key === lane);
@@ -100,13 +108,14 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
                   <div key={`${lane}-${index}`} className="flex items-center gap-3 bg-navy rounded-lg px-3 py-2 border border-cyan/5">
                     {pos && <div className="relative w-6 h-6 shrink-0"><Image src={pos.icon} alt={pos.label} fill style={{ objectFit: 'contain' }} /></div>}
                     <span className="text-text-main text-sm font-semibold flex-1 uppercase tracking-wide">{pos?.label}</span>
-                    <button onClick={() => handleRemoverVaga(index)} className="text-pink-subtle hover:text-pink-subtle/70 transition-colors">
+                    <button onClick={() => handleRemoverVaga(index)} className="text-pink-subtle hover:text-pink-subtle/70 transition-colors" title="Remover vaga (já preenchida)">
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                   </div>
                 );
               })}
             </div>
+
             {vagasLanes.length < 4 && (
               <div className="mt-3">
                 {adicionandoVaga ? (
@@ -123,10 +132,12 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
 
           {erro && <p className="text-pink-subtle text-sm bg-pink-subtle/10 border border-pink-subtle/20 rounded-lg px-3 py-2">{erro}</p>}
 
-          <button onClick={handleSubmit} disabled={enviando}
-            className="w-full py-3 rounded-lg bg-cyan hover:bg-cyan-hover text-navy font-bold uppercase tracking-widest transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-            {enviando ? 'CADASTRANDO...' : 'CONFIRMAR'}
-          </button>
+          <div className="flex gap-3 pt-2">
+            <button onClick={onClose} className="flex-1 py-3 rounded-lg border border-cyan/30 text-text-main font-bold uppercase tracking-widest text-xs transition-colors hover:bg-cyan-dim">CANCELAR</button>
+            <button onClick={handleSubmit} disabled={enviando} className="flex-1 py-3 rounded-lg bg-cyan hover:bg-cyan-hover text-navy font-bold uppercase tracking-widest text-xs transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              {enviando ? 'SALVANDO...' : 'SALVAR'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
