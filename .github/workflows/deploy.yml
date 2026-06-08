@@ -43,3 +43,9 @@ jobs:
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
             "${{ secrets.SSH_USERNAME }}@dsc.rodrigor.com" \
             "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Rodar migrations no servidor
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+            "${{ secrets.SSH_USERNAME }}@dsc.rodrigor.com" \
+            "docker exec feche-seu-time-app npx prisma migrate deploy"
