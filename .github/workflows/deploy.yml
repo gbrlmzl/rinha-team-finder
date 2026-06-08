@@ -24,7 +24,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build e push da imagem
         uses: docker/build-push-action@v5
@@ -43,7 +43,7 @@ jobs:
           # então o servidor usa esse token efêmero só para puxar a imagem do GHCR.
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
             "${{ secrets.SSH_USERNAME }}@dsc.rodrigor.com" \
-            "${{ github.actor }}:${{ secrets.GHCR_TOKEN }}"
+            "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}"
           
           # Aguarda deploy completar e executa migrations
           sleep 10
