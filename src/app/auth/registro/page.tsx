@@ -50,16 +50,16 @@ export default function RegistroPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
+    <div className="w-full flex-1 bg-navy flex items-center justify-center px-4 font-sans py-12">
       <div className="w-full max-w-sm">
-        <h1 className="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+        <h1 className="font-display text-3xl font-extrabold uppercase tracking-[-0.04em] text-center mb-2 text-text-main">
           Criar Conta
         </h1>
-        <p className="text-zinc-400 text-center mb-8 text-sm">Registre-se para participar</p>
+        <p className="text-text-muted text-center mb-8 text-sm font-light">Registre-se para participar</p>
 
-        <form onSubmit={handleSubmit} className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 space-y-4 shadow-xl">
+        <form onSubmit={handleSubmit} className="bg-navy-light border border-cyan/10 rounded-2xl p-6 space-y-4 shadow-xl">
           <div>
-            <label htmlFor="register-username" className="block text-sm text-zinc-400 mb-1">Usuário</label>
+            <label htmlFor="register-username" className="block text-xs font-bold uppercase tracking-widest text-text-muted mb-1.5">Usuário</label>
             <input
               id="register-username"
               type="text"
@@ -67,12 +67,12 @@ export default function RegistroPage() {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Escolha um nome de usuário"
               required
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-600 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full px-4 py-2.5 rounded-lg bg-input-bg border border-input-border text-text-main placeholder-text-muted/50 focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label htmlFor="register-password" className="block text-sm text-zinc-400 mb-1">Senha</label>
+            <label htmlFor="register-password" className="block text-xs font-bold uppercase tracking-widest text-text-muted mb-1.5">Senha</label>
             <input
               id="register-password"
               type="password"
@@ -80,12 +80,12 @@ export default function RegistroPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Mínimo 6 caracteres"
               required
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-600 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full px-4 py-2.5 rounded-lg bg-input-bg border border-input-border text-text-main placeholder-text-muted/50 focus:outline-none transition-colors"
             />
           </div>
 
           <div>
-            <label htmlFor="register-confirm" className="block text-sm text-zinc-400 mb-1">Confirmar Senha</label>
+            <label htmlFor="register-confirm" className="block text-xs font-bold uppercase tracking-widest text-text-muted mb-1.5">Confirmar Senha</label>
             <input
               id="register-confirm"
               type="password"
@@ -93,25 +93,25 @@ export default function RegistroPage() {
               onChange={(e) => setConfirmarSenha(e.target.value)}
               placeholder="Repita a senha"
               required
-              className="w-full px-4 py-2.5 rounded-lg bg-zinc-800 border border-zinc-600 text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full px-4 py-2.5 rounded-lg bg-input-bg border border-input-border text-text-main placeholder-text-muted/50 focus:outline-none transition-colors"
             />
           </div>
 
           {erro && (
-            <p className="text-red-400 text-sm bg-red-900/20 border border-red-800/30 rounded-lg px-3 py-2">{erro}</p>
+            <p className="text-pink-subtle text-sm bg-pink-subtle/10 border border-pink-subtle/20 rounded-lg px-3 py-2">{erro}</p>
           )}
 
           <button
             type="submit"
             disabled={carregando}
-            className="w-full py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-colors disabled:opacity-50"
+            className="w-full py-2.5 rounded-lg bg-cyan hover:bg-cyan-hover text-navy font-bold uppercase tracking-widest text-sm transition-colors disabled:opacity-50"
           >
-            {carregando ? 'Criando...' : 'Criar Conta'}
+            {carregando ? 'CRIANDO...' : 'CRIAR CONTA'}
           </button>
 
-          <p className="text-center text-sm text-zinc-400">
+          <p className="text-center text-sm text-text-muted pt-2">
             Já tem conta?{' '}
-            <Link href="/auth/login" className="text-blue-400 hover:text-blue-300 transition-colors">
+            <Link href="/auth/login" className="text-cyan font-semibold hover:text-cyan-hover transition-colors">
               Fazer login
             </Link>
           </p>

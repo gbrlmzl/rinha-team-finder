@@ -27,16 +27,16 @@ export default function EquipesPage() {
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-8 pt-16 sm:pt-20">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">Equipes com vagas</h1>
-        <p className="mt-2 text-sm text-zinc-400">Veja times procurando jogadores e entre em contato com o capitão.</p>
+        <h1 className="font-display text-2xl font-extrabold uppercase tracking-[-0.02em] text-text-main sm:text-3xl">Equipes com vagas</h1>
+        <p className="mt-2 text-sm text-text-muted font-light">Veja times procurando jogadores e entre em contato com o capitão.</p>
       </div>
 
       {carregando ? (
-        <div className="py-12 text-center text-zinc-400">Carregando...</div>
+        <div className="py-12 text-center text-text-muted">Carregando...</div>
       ) : equipes.length === 0 ? (
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 py-12 text-center">
-          <p className="text-lg text-zinc-200">Nenhuma equipe disponível no momento</p>
-          <p className="mt-2 text-sm text-zinc-500">Quando algum time abrir vagas, ele aparecerá aqui.</p>
+        <div className="rounded-2xl border border-cyan/10 bg-navy-light/50 py-12 text-center">
+          <p className="text-lg text-text-main">Nenhuma equipe disponível no momento</p>
+          <p className="mt-2 text-sm text-text-muted">Quando algum time abrir vagas, ele aparecerá aqui.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -51,6 +51,7 @@ export default function EquipesPage() {
               createdAt={equipe.createdAt}
               userId={equipe.userId}
               onDelete={fetchEquipes}
+              onUpdate={fetchEquipes}
             />
           ))}
         </div>

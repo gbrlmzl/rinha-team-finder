@@ -135,11 +135,11 @@ export function PositionSelector({
         title={position.label}
         disabled={isLaneDisabled}
         className={`
-          flex flex-col items-center justify-center gap-1 border-2 transition-all duration-200
+          flex flex-col items-center justify-center gap-1 border transition-all duration-200
           ${isRadial ? 'rounded-full p-2 shadow-lg' : 'rounded-lg px-3 py-2'}
-          ${isSelected ? 'bg-blue-600 border-blue-600 scale-110' : 'bg-zinc-800 border-zinc-600'}
-          ${isLaneDisabled ? 'opacity-30 cursor-not-allowed' : 'hover:bg-blue-600 hover:border-blue-600 cursor-pointer'}
-          focus-visible:outline focus-visible:outline-2 focus-visible:outline-white
+          ${isSelected ? 'bg-cyan border-cyan scale-110' : 'bg-input-bg border-input-border'}
+          ${isLaneDisabled ? 'opacity-30 cursor-not-allowed' : 'hover:bg-cyan hover:border-cyan cursor-pointer'}
+          focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan
         `}
       >
         <div className={isRadial ? 'relative w-7 h-7' : 'relative w-8 h-8'}>
@@ -151,7 +151,7 @@ export function PositionSelector({
           />
         </div>
         {!isRadial && (
-          <span className={`text-xs font-medium leading-none ${isSelected ? 'text-white' : isLaneDisabled ? 'text-zinc-500' : 'text-zinc-300'}`}>
+          <span className={`text-[10px] font-bold uppercase tracking-widest leading-none ${isSelected ? 'text-navy' : isLaneDisabled ? 'text-text-muted/40' : 'text-text-muted'}`}>
             {position.label}
           </span>
         )}
@@ -160,7 +160,7 @@ export function PositionSelector({
   };
 
   return (
-    <div ref={containerRef} className="relative inline-block">
+    <div ref={containerRef} className="relative inline-block font-sans">
       {/* Botão principal */}
       <button
         type="button"
@@ -168,11 +168,11 @@ export function PositionSelector({
         disabled={disabled}
         title={disabled ? 'Desabilitado' : 'Selecionar posição'}
         className={`
-          rounded-full p-2 border-2 transition-all duration-200
-          bg-zinc-800 border-zinc-600
-          hover:bg-blue-600 hover:border-blue-600
+          rounded-full p-2 border transition-all duration-200
+          bg-input-bg border-input-border
+          hover:bg-cyan hover:border-cyan
           disabled:opacity-50 disabled:cursor-not-allowed
-          focus:outline-none focus:ring-2 focus:ring-blue-500
+          focus:outline-none focus:ring-2 focus:ring-cyan
           ${open && variant === 'radial' ? 'z-[60] relative' : ''}
         `}
       >
@@ -183,7 +183,7 @@ export function PositionSelector({
 
       {/* Dropdown menu */}
       {open && variant === 'dropdown' && (
-        <div className="absolute z-50 top-full mt-2 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-2rem)] bg-zinc-900 border border-zinc-700 rounded-xl p-2 shadow-xl">
+        <div className="absolute z-50 top-full mt-2 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-2rem)] bg-navy-light border border-cyan/10 rounded-xl p-2 shadow-xl">
           <div className="grid grid-cols-2 gap-1 min-[400px]:grid-cols-3 sm:grid-cols-6">
             {PLAYER_POSITIONS.map((position, index) => renderPositionButton(position, index, false))}
           </div>
@@ -195,10 +195,10 @@ export function PositionSelector({
         <>
           {/* Backdrop sutil atrás do radial */}
           <div
-            className="absolute z-50 rounded-full bg-zinc-900/80 border border-zinc-700/50 backdrop-blur-sm"
+            className="absolute z-50 rounded-full bg-navy/90 border border-cyan/10 backdrop-blur-md shadow-2xl"
             style={{
-              width: radialRadius * 2 + 56,
-              height: radialRadius * 2 + 56,
+              width: radialRadius * 2 + 86,
+              height: radialRadius * 2 + 86,
               left: '50%',
               top: '50%',
               transform: 'translate(-50%, -50%)',
@@ -231,11 +231,11 @@ export function PositionSelector({
                   title={position.label}
                   disabled={isLaneDisabled}
                   className={`
-                    flex flex-col items-center justify-center gap-0.5 rounded-full p-2 border-2
+                    flex flex-col items-center justify-center gap-0.5 rounded-full p-2 border
                     transition-all duration-150 shadow-lg
-                    ${isSelected ? 'bg-blue-600 border-blue-500 scale-110' : 'bg-zinc-800 border-zinc-600'}
-                    ${isLaneDisabled ? 'opacity-30 cursor-not-allowed' : 'hover:bg-blue-600 hover:border-blue-500 hover:scale-110 cursor-pointer'}
-                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-white
+                    ${isSelected ? 'bg-cyan border-cyan scale-110' : 'bg-input-bg border-input-border'}
+                    ${isLaneDisabled ? 'opacity-30 cursor-not-allowed' : 'hover:bg-cyan hover:border-cyan hover:scale-110 cursor-pointer'}
+                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan
                   `}
                 >
                   <div className="relative w-7 h-7">
@@ -247,7 +247,7 @@ export function PositionSelector({
                     />
                   </div>
                 </button>
-                <span className={`block text-center text-[10px] font-medium mt-0.5 ${isSelected ? 'text-blue-400' : isLaneDisabled ? 'text-zinc-600' : 'text-zinc-400'}`}>
+                <span className={`block text-center text-[9px] font-bold uppercase tracking-widest mt-1 ${isSelected ? 'text-cyan' : isLaneDisabled ? 'text-text-muted/30' : 'text-text-muted'}`}>
                   {position.label}
                 </span>
               </div>
