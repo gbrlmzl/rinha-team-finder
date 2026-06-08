@@ -15,7 +15,7 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"
+      - "8116:3000"
     environment:
       DATABASE_URL: postgresql://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@db:5432/feche_seu_time
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
