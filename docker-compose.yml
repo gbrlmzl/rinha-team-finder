@@ -1,27 +1,34 @@
-version: '3.8'
+# Docker Compose para DESENVOLVIMENTO LOCAL.
+#
+# Sobe apenas o banco PostgreSQL em container — a aplicação Next.js roda
+# diretamente na sua máquina com `npm run dev`. Em produção a aplicação é
+# hospedada na Vercel (que usa seu próprio banco gerenciado).
+#
+# Uso:
+#   docker compose up -d        # sobe o banco
+#   docker compose down         # para o banco (mantém os dados)
+#   docker compose down -v      # para e APAGA os dados
 
 services:
   db:
     image: postgres:16-alpine
+    container_name: rinha-team-finder-db
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: eq16
+      POSTGRES_USER: ${POSTGRES_USER:-rinha}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rinha}
+      POSTGRES_DB: ${POSTGRES_DB:-rinha}
     ports:
-      - "5432:5432"
+      # Porta do HOST configurável via DB_PORT (default 5432).
+      # Use outra (ex.: 5433) se já tiver um PostgreSQL local ocupando a 5432.
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  app:
-    build: .
-    ports:
-      - "127.0.0.1:8116:8080"
-    environment:
-      DATABASE_URL: postgresql://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@db:5432/eq16?maximum_pool_size=5
-      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-      NEXTAUTH_URL: ${NEXTAUTH_URL}
-    depends_on:
-      - db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-rinha}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
