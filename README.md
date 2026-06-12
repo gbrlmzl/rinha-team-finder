@@ -20,14 +20,22 @@ A experiência é dividida em **duas personas**, com identidade visual própria:
 ## ✨ Funcionalidades
 
 ### 👤 Free Agent (jogador buscando equipe)
-- Cadastro com **nickname**, **rota principal**, **rota secundária** e **usuário do Discord**.
+- Cadastro com **nickname**, **rota principal** e **rota secundária**. O contato do Discord vem da **conta vinculada** (não é mais digitado à mão).
 - **Regra do Fill:** se a rota principal for **Fill**, o jogador joga qualquer rota e a **secundária deixa de ser pedida** (some do formulário).
 - **Apenas um free agent por conta** — para criar outro, é preciso remover o atual.
 
 ### 🛡️ Equipe (buscando jogadores)
-- Cadastro com **nome**, **nickname do capitão**, **usuário do Discord do capitão** e as **vagas abertas**.
+- Cadastro com **nome**, **nickname do capitão** e as **vagas abertas**. O Discord do capitão vem da **conta vinculada**.
 - **De 1 a 5 vagas** — toda equipe precisa ter **ao menos uma vaga** aberta.
 - Edição e remoção das próprias equipes.
+- Ao criar a equipe, um **canal privado no Discord** é criado automaticamente (quando o bot está configurado).
+
+### 🤖 Integração com Discord
+- **Login com Discord** (além do usuário/senha): o primeiro login cria a conta automaticamente, sem senha.
+- **Vínculo obrigatório:** para cadastrar equipe ou virar free agent, é preciso ter o Discord vinculado — a identidade real (`discordId`) substitui o texto livre antigo. Um **banner** lembra quem ainda não vinculou.
+- **"Solicitar entrada":** o free agent escolhe uma vaga aberta e o bot o adiciona ao canal privado da equipe, avisando o capitão.
+- **Candidaturas:** o capitão vê quem solicitou cada vaga e pode **aceitar/recusar** pelo site. Ao aceitar, a vaga fecha, os outros candidatos àquela lane são recusados e o jogador some das demais vagas da equipe.
+- Tudo que toca o Discord é **best-effort**: sem o bot configurado, o site funciona normalmente (as ações ficam só no banco).
 
 ### 🔎 Listagens e filtros
 - Páginas de **Equipes** e **Free Agents** são **públicas** (qualquer um navega).
@@ -36,15 +44,15 @@ A experiência é dividida em **duas personas**, com identidade visual própria:
 ### 🔗 Nicknames e contato
 - O **nickname** segue o formato `Nome#TAG` (a TAG após o `#` tem **no máximo 5 caracteres**). Ex.: `Chico kit lasca#Chico`. É exibido **exatamente como o usuário digitou** (sem caixa alta forçada).
 - O nickname (do jogador e do capitão) é **clicável** e abre o perfil no **[League of Graphs](https://www.leagueofgraphs.com/)** — solução temporária até integrarmos a API oficial da Riot.
-- O **contato é via Discord**. Cada cadastro informa o usuário do Discord, exibido em um chip nos cards.
+- O **contato é via Discord** vinculado à conta. O chip do Discord nos cards é **copiável** (um clique copia o usuário).
 
 ### 🔒 Acesso aos contatos (privacidade)
-- As listagens são públicas, mas **ver/acessar os canais de comunicação exige login**. Deslogado, o chip do Discord aparece como **"entre para ver"** e leva à tela de login (que devolve à página de origem). O nickname → League of Graphs continua público (é perfil de jogo, não contato).
+- As listagens são públicas, mas **ver/copiar o contato exige login**. Deslogado, o chip do Discord aparece como **"entre para ver"** e leva à tela de login (que devolve à página de origem). O nickname → League of Graphs continua público (é perfil de jogo, não contato).
 
 ### 🛠️ Gestão e permissões
 - Cada usuário gerencia **seus próprios** anúncios (editar/excluir).
 - **ADMIN** pode remover qualquer anúncio.
-- Páginas de conta para **trocar a senha**.
+- Área **Minha Conta** com menu lateral: **Perfil**, **Contas Vinculadas** (gerenciar o Discord) e **Segurança** (trocar a senha, sair).
 
 ### 🎨 Experiência / Design
 - **Home "Split Path"**: duas jornadas lado a lado (Jogador × Equipe), com ações primárias em destaque e atalhos secundários.
@@ -67,6 +75,9 @@ A experiência é dividida em **duas personas**, com identidade visual própria:
 | Equipe: 1 a 5 vagas, no mínimo 1 | Formulário + API |
 | Editar/excluir: dono ou ADMIN | API |
 | Contato (Discord) só logado | UI dos cards |
+| Discord vinculado p/ cadastrar/solicitar | API (checa `discordId` no banco) |
+| Solicitar entrada: lane tem que estar aberta | API (`POST /api/equipes/[id]/solicitar`) |
+| Aceitar/recusar candidatura: só capitão/ADMIN | API + núcleo `lib/candidaturas.ts` |
 
 ---
 
@@ -77,7 +88,7 @@ A experiência é dividida em **duas personas**, com identidade visual própria:
 | **Framework**    | [Next.js 16](https://nextjs.org/) (App Router)                              |
 | **Linguagem**    | [TypeScript 5](https://www.typescriptlang.org/)                            |
 | **UI**           | [React 19](https://react.dev/) + [Tailwind CSS 4](https://tailwindcss.com/) |
-| **Autenticação** | [NextAuth.js v4](https://next-auth.js.org/) (Credentials + JWT)            |
+| **Autenticação** | [NextAuth.js v4](https://next-auth.js.org/) (Credentials + **Discord OAuth** + JWT) |
 | **ORM**          | [Prisma 7](https://www.prisma.io/) (com `prisma.config.ts`)               |
 | **Banco**        | [PostgreSQL 16](https://www.postgresql.org/)                              |
 | **Hospedagem**   | [Vercel](https://vercel.com/) (produção)                                  |
@@ -128,28 +139,36 @@ rinha-team-finder/
 **Enums:**
 - **`Role`** — `USER` | `ADMIN`
 - **`Lane`** — `TOP` | `JUNGLE` | `MID` | `ADC` | `SUPPORT` | `FILL`
+- **`StatusEquipe`** — `ABERTA` | `COMPLETA`
+- **`StatusCandidatura`** — `PENDENTE` | `ACEITA` | `RECUSADA`
 
 **Modelos:**
 
-| Modelo      | Descrição                | Campos Principais                                                     |
-| ----------- | ------------------------ | --------------------------------------------------------------------- |
-| `User`      | Usuário autenticado      | `username`, `password` (hash), `role`                                 |
-| `FreeAgent` | Jogador buscando equipe  | `nickname`, `lanePrincipal`, `laneSecundaria?` (opcional), `discord`  |
-| `Equipe`    | Equipe buscando jogadores| `nome`, `nicknameCapitao`, `discord`, `vagasLanes[]`                   |
+| Modelo        | Descrição                 | Campos Principais                                                                                          |
+| ------------- | ------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `User`        | Usuário autenticado       | `username`, `password?` (hash, opcional), `role`, `discordId?` (snowflake), `discordUsername?`, tokens OAuth cifrados |
+| `FreeAgent`   | Jogador buscando equipe   | `nickname`, `lanePrincipal`, `laneSecundaria?` (opcional)                                                  |
+| `Equipe`      | Equipe buscando jogadores | `nome`, `nicknameCapitao`, `vagasLanes[]`, `discordChannelId?`, `status`                                   |
+| `Candidatura` | Pedido de entrada numa vaga | `lane`, `status`, `equipeId`, `userId` — único por `(equipeId, userId, lane)`                            |
 
 - `laneSecundaria` é **opcional** (jogadores Fill não têm secundária).
-- Ao deletar um `User`, todos os seus registros são removidos em cascata (`onDelete: Cascade`).
+- `password` é **opcional**: contas criadas via **login do Discord** não têm senha local.
+- O contato (Discord) deixou de ser texto livre em `FreeAgent`/`Equipe` — a verdade agora é `User.discordId`/`discordUsername`.
+- Ao deletar um `User`, todos os seus registros (inclusive candidaturas) são removidos em cascata (`onDelete: Cascade`).
 
 ---
 
 ## 🔐 Autenticação
 
-Autenticação via **NextAuth.js v4** com estratégia **JWT** e provider **Credentials**:
+Autenticação via **NextAuth.js v4** com estratégia **JWT** e dois providers: **Credentials** (usuário/senha) e **Discord OAuth**:
 
-1. O usuário se cadastra em `/auth/registro` (senha salva com hash `bcryptjs`).
+1. O usuário se cadastra em `/auth/registro` (senha com hash `bcryptjs`) **ou** entra direto com **"Entrar com Discord"** — o primeiro login via Discord cria a conta automaticamente, sem senha.
 2. O login é feito em `/auth/login` (respeita `?redirect=` para voltar à página de origem).
 3. Sessões são gerenciadas via JWT (sem banco de sessões).
-4. O token JWT contém: `id`, `username` e `role`.
+4. O token JWT contém: `id`, `username`, `role` e o vínculo do Discord (`discordId`, `discordUsername`, `discordLinked`).
+5. **Vincular o Discord** é obrigatório para cadastrar equipe/free agent — feito no login com Discord ou em **Minha Conta → Contas Vinculadas** (OAuth: `/api/discord/link` → `/api/discord/callback`).
+
+> ⚠️ Hoje, login usuário/senha e depois "Entrar com Discord" criam **contas separadas** (não há email em comum para fundir). Pendência conhecida — ver o markdown da integração com Discord.
 
 ---
 
@@ -233,6 +252,19 @@ Para parar o banco: `npm run db:down` (mantém os dados) ou `docker compose down
 | `NEXTAUTH_SECRET` | Chave secreta para assinar os JWT | `uma-string-aleatoria-longa`                     |
 | `NEXTAUTH_URL`    | URL base da aplicação             | `http://localhost:3000` / URL da Vercel          |
 
+**Discord (integração):**
+
+| Variável                    | Descrição                                                              | Obrigatória? |
+| --------------------------- | --------------------------------------------------------------------- | ------------ |
+| `DISCORD_CLIENT_ID`         | Client ID da aplicação Discord (login + vínculo)                      | p/ Discord   |
+| `DISCORD_CLIENT_SECRET`     | Client Secret da aplicação Discord                                    | p/ Discord   |
+| `DISCORD_TOKEN_ENC_KEY`     | Chave p/ cifrar os tokens OAuth no banco (`openssl rand -hex 32`)     | recomendada (cai em `NEXTAUTH_SECRET`) |
+| `DISCORD_BOT_TOKEN`         | Bot Token — necessário p/ auto-join e canais privados                 | p/ canais    |
+| `DISCORD_GUILD_ID`          | ID do servidor (guild) onde o bot atua                                | p/ canais    |
+| `DISCORD_TEAMS_CATEGORY_ID` | (Opcional) categoria p/ agrupar os canais das equipes                 | não          |
+
+> No app do Discord (OAuth2), cadastre **dois redirects**: `${NEXTAUTH_URL}/api/auth/callback/discord` (login) e `${NEXTAUTH_URL}/api/discord/callback` (vínculo). O bot precisa estar no servidor com permissão **"Gerenciar Canais"**. Sem essas variáveis, o site funciona normalmente — as ações do Discord viram no-op.
+
 Variáveis usadas **apenas** pelo `docker-compose.yml` local (opcionais, têm defaults):
 `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `DB_PORT`.
 
@@ -269,7 +301,14 @@ export default defineConfig({
 | `PUT`    | `/api/equipes/[id]`      | Dono/ADMIN    | Atualiza equipe                            |
 | `DELETE` | `/api/equipes/[id]`      | Dono/ADMIN    | Remove equipe                              |
 | `GET`    | `/api/free-agents`       | Público       | Lista free agents                          |
-| `POST`   | `/api/free-agents`       | Autenticado   | Cria free agent (1 por conta)              |
+| `POST`   | `/api/free-agents`       | Autenticado + Discord | Cria free agent (1 por conta)      |
 | `DELETE` | `/api/free-agents/[id]`  | Dono/ADMIN    | Remove free agent                          |
-| `*`      | `/api/auth/[...nextauth]`| —             | Login/logout (NextAuth)                    |
+| `GET/POST` | `/api/equipes/[id]/solicitar` | Autenticado + Discord | Lanes já solicitadas / solicita uma vaga |
+| `GET`    | `/api/equipes/[id]/candidaturas` | Dono/ADMIN | Candidaturas recebidas da equipe       |
+| `PATCH`  | `/api/candidaturas/[id]` | Dono/ADMIN    | Aceita ou recusa uma candidatura           |
+| `GET`    | `/api/discord/link`      | Autenticado   | Inicia o vínculo do Discord (OAuth)        |
+| `GET`    | `/api/discord/callback`  | Autenticado   | Callback do vínculo                        |
+| `POST`   | `/api/discord/unlink`    | Autenticado   | Desvincula o Discord                        |
+| `GET`    | `/api/usuarios/me`       | Autenticado   | Dados do perfil do usuário logado          |
+| `*`      | `/api/auth/[...nextauth]`| —             | Login/logout (NextAuth: Credentials + Discord) |
 | `GET`    | `/ping`                  | Público       | Health check                               |

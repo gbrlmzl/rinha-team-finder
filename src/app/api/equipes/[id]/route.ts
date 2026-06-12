@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSessionOrUnauthorized } from '@/lib/apiAuth';
 import { isNicknameValido } from '@/constants/links';
+import { deleteChannel } from '@/lib/discord';
 
 const MAX_VAGAS = 5;
 
@@ -29,9 +30,9 @@ export async function PUT(
   }
 
   try {
-    const { nome, nicknameCapitao, discord, vagasLanes } = await req.json();
+    const { nome, nicknameCapitao, vagasLanes } = await req.json();
 
-    if (!nome || !nicknameCapitao || !discord) {
+    if (!nome || !nicknameCapitao) {
       return NextResponse.json(
         { erro: 'Campos obrigatórios não preenchidos' },
         { status: 400 }
@@ -64,7 +65,6 @@ export async function PUT(
       data: {
         nome,
         nicknameCapitao,
-        discord,
         vagasLanes: vagasLanes ?? [],
       },
     });
@@ -99,6 +99,12 @@ export async function DELETE(
   }
 
   await prisma.equipe.delete({ where: { id } });
+
+  // Best-effort: remove o canal do Discord junto (candidaturas caem por cascade).
+  if (equipe.discordChannelId) {
+    await deleteChannel(equipe.discordChannelId);
+  }
+
   return NextResponse.json({ mensagem: 'Equipe removida com sucesso' });
 }
 

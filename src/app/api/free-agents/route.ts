@@ -12,19 +12,37 @@ export async function GET() {
       nickname: true,
       lanePrincipal: true,
       laneSecundaria: true,
-      discord: true,
       createdAt: true,
       userId: true,
+      user: { select: { discordUsername: true } },
     },
   });
 
-  return NextResponse.json(freeAgents);
+  // Achata o Discord vinculado do dono para o shape consumido pelo front.
+  const resposta = freeAgents.map(({ user, ...fa }) => ({
+    ...fa,
+    discordUsername: user?.discordUsername ?? null,
+  }));
+
+  return NextResponse.json(resposta);
 }
 
-// POST /api/free-agents — autenticado
+// POST /api/free-agents — autenticado + Discord vinculado
 export async function POST(req: NextRequest) {
   const { session, error } = await getSessionOrUnauthorized();
   if (error) return error;
+
+  // Vínculo do Discord é obrigatório (fonte da verdade no banco, não no token).
+  const dono = await prisma.user.findUnique({
+    where: { id: session!.user.id },
+    select: { discordId: true },
+  });
+  if (!dono?.discordId) {
+    return NextResponse.json(
+      { erro: 'Vincule sua conta do Discord antes de se cadastrar como Free Agent.' },
+      { status: 403 }
+    );
+  }
 
   // Apenas um free agent por conta.
   const jaExiste = await prisma.freeAgent.findFirst({
@@ -39,9 +57,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { nickname, lanePrincipal, laneSecundaria, discord } = await req.json();
+    const { nickname, lanePrincipal, laneSecundaria } = await req.json();
 
-    if (!nickname || !lanePrincipal || !discord) {
+    if (!nickname || !lanePrincipal) {
       return NextResponse.json(
         { erro: 'Todos os campos são obrigatórios' },
         { status: 400 }
@@ -78,7 +96,6 @@ export async function POST(req: NextRequest) {
         nickname,
         lanePrincipal,
         laneSecundaria: secundaria,
-        discord,
         userId: session!.user.id,
       },
     });

@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 import { Lane } from '@/types';
 import { PositionSelector } from '@/components/PositionSelector';
 import { PLAYER_POSITIONS } from '@/constants/positions';
 import { ModalSucesso } from '@/components/modals/ModalSucesso';
+import { VincularDiscordGate } from '@/components/modals/VincularDiscordGate';
 import { isNicknameValido, NICKNAME_HINT } from '@/constants/links';
 
 interface CadastroEquipeVagaProps {
@@ -17,9 +19,9 @@ interface CadastroEquipeVagaProps {
 const MAX_VAGAS = 5;
 
 export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeVagaProps) {
+  const { data: session } = useSession();
   const [nome, setNome] = useState('');
   const [nicknameCapitao, setNicknameCapitao] = useState('');
-  const [discord, setDiscord] = useState('');
   const [vagasLanes, setVagasLanes] = useState<Lane[]>([]);
   const [adicionandoVaga, setAdicionandoVaga] = useState(false);
   const [erro, setErro] = useState('');
@@ -28,6 +30,11 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
 
   if (!open && !mostrarSucesso) return null;
 
+  // Vincular o Discord é pré-requisito para cadastrar a equipe.
+  if (open && session?.user && !session.user.discordLinked) {
+    return <VincularDiscordGate onClose={onClose} acao="cadastrar uma equipe" />;
+  }
+
   const lanesOcupadas: Lane[] = vagasLanes.filter((lane) => lane !== 'FILL');
 
   const handleAdicionarVaga = (lane: Lane) => { setVagasLanes((prev) => [...prev, lane]); setAdicionandoVaga(false); };
@@ -35,7 +42,7 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
 
   const handleSubmit = async () => {
     setErro('');
-    if (!nome.trim() || !nicknameCapitao.trim() || !discord.trim()) { setErro('Preencha todos os campos obrigatórios.'); return; }
+    if (!nome.trim() || !nicknameCapitao.trim()) { setErro('Preencha todos os campos obrigatórios.'); return; }
     if (!isNicknameValido(nicknameCapitao)) { setErro('Nickname do capitão inválido. Use o formato Nome#TAG (ex.: Chico kit lasca#Chico).'); return; }
     if (vagasLanes.length === 0) { setErro('Adicione ao menos uma vaga aberta.'); return; }
 
@@ -44,11 +51,11 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
       const res = await fetch('/api/equipes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: nome.trim(), nicknameCapitao: nicknameCapitao.trim(), discord: discord.trim(), vagasLanes }),
+        body: JSON.stringify({ nome: nome.trim(), nicknameCapitao: nicknameCapitao.trim(), vagasLanes }),
       });
       if (!res.ok) { const data = await res.json(); setErro(data.erro || 'Erro ao cadastrar.'); return; }
 
-      setNome(''); setNicknameCapitao(''); setDiscord(''); setVagasLanes([]);
+      setNome(''); setNicknameCapitao(''); setVagasLanes([]);
       onSuccess(); onClose(); setMostrarSucesso(true);
     } catch { setErro('Erro de conexão.'); } finally { setEnviando(false); }
   };
@@ -78,12 +85,6 @@ export function CadastroEquipeVaga({ open, onClose, onSuccess }: CadastroEquipeV
             <input type="text" value={nicknameCapitao} onChange={(e) => setNicknameCapitao(e.target.value)} placeholder="Chico kit lasca#Chico"
               className="w-full px-4 py-2.5 rounded-lg bg-input-bg border border-input-border text-text-main placeholder-text-muted/50 focus:outline-none transition-colors" />
             <p className="mt-1.5 text-[11px] text-text-muted/70 font-light">{NICKNAME_HINT}</p>
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-text-muted mb-1.5">Usuário do Discord do Capitão</label>
-            <input type="text" value={discord} onChange={(e) => setDiscord(e.target.value)} maxLength={37} placeholder="usuario_discord"
-              className="w-full px-4 py-2.5 rounded-lg bg-input-bg border border-input-border text-text-main placeholder-text-muted/50 focus:outline-none transition-colors" />
           </div>
 
           <div className="border-t border-pink-subtle/10 pt-4">

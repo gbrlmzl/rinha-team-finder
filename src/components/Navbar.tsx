@@ -79,7 +79,7 @@ export function Navbar() {
                 <p className="text-sm font-semibold text-cyan">{session.user.username}</p>
               </div>
               <Link
-                href="/conta/mudar-senha"
+                href="/conta/perfil"
                 className="rounded border border-cyan/30 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted transition-colors hover:border-cyan/60 hover:text-text-main"
               >
                 Minha Conta
@@ -130,7 +130,7 @@ export function Navbar() {
             {session?.user ? (
               <div className="flex flex-col gap-2">
                 <p className="text-xs text-text-muted">Olá, <strong className="text-cyan">{session.user.username}</strong></p>
-                <Link href="/conta/mudar-senha" onClick={() => setMenuAberto(false)} className="rounded-lg border border-cyan/20 px-4 py-2 text-center text-xs font-bold tracking-[0.1em] text-text-main transition-colors hover:bg-navy-lighter">MINHA CONTA</Link>
+                <Link href="/conta/perfil" onClick={() => setMenuAberto(false)} className="rounded-lg border border-cyan/20 px-4 py-2 text-center text-xs font-bold tracking-[0.1em] text-text-main transition-colors hover:bg-navy-lighter">MINHA CONTA</Link>
                 <button onClick={handleSair} className="rounded-lg bg-cyan px-4 py-2 text-xs font-bold tracking-[0.1em] text-navy transition-colors hover:bg-cyan-hover">SAIR</button>
               </div>
             ) : (

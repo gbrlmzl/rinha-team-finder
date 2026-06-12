@@ -34,6 +34,8 @@ export default function EquipesPage() {
   };
 
   useEffect(() => {
+    // Carrega os dados na montagem (setState ocorre só após o await do fetch).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchEquipes();
   }, []);
 
@@ -69,8 +71,9 @@ export default function EquipesPage() {
               id={equipe.id}
               nome={equipe.nome}
               nicknameCapitao={equipe.nicknameCapitao}
-              discord={equipe.discord}
+              discordUsername={equipe.discordUsername}
               vagasLanes={equipe.vagasLanes}
+              candidaturasCount={equipe.candidaturasCount}
               createdAt={equipe.createdAt}
               userId={equipe.userId}
               onDelete={fetchEquipes}

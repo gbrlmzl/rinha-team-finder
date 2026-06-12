@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { DiscordLoginButton } from '@/components/auth/DiscordLoginButton';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -84,6 +85,8 @@ export default function LoginPage() {
           >
             {carregando ? 'ENTRANDO...' : 'ENTRAR'}
           </button>
+
+          <DiscordLoginButton />
 
           <p className="text-center text-sm text-text-muted pt-2">
             Não tem conta?{' '}
