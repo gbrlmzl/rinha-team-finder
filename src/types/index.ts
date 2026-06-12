@@ -11,8 +11,8 @@ export interface FreeAgentData {
   id: string;
   nickname: string;
   lanePrincipal: Lane;
-  laneSecundaria: Lane;
-  contato: string;
+  laneSecundaria: Lane | null;
+  discord: string;
   createdAt: string;
   userId: string;
 }
@@ -20,8 +20,8 @@ export interface FreeAgentData {
 export interface EquipeData {
   id: string;
   nome: string;
-  contatoCapitao: string;
-  laneCapitao: Lane;
+  nicknameCapitao: string;
+  discord: string;
   vagasLanes: Lane[];
   createdAt: string;
   userId: string;

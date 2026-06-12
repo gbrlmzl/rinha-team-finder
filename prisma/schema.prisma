@@ -36,8 +36,8 @@ model FreeAgent {
   id             String   @id @default(cuid())
   nickname       String
   lanePrincipal  Lane
-  laneSecundaria Lane
-  contato        String
+  laneSecundaria Lane?
+  discord        String
   createdAt      DateTime @default(now())
 
   userId String
@@ -45,12 +45,12 @@ model FreeAgent {
 }
 
 model Equipe {
-  id             String   @id @default(cuid())
-  nome           String
-  contatoCapitao String
-  laneCapitao    Lane
-  vagasLanes     Lane[]
-  createdAt      DateTime @default(now())
+  id              String   @id @default(cuid())
+  nome            String
+  nicknameCapitao String
+  discord         String
+  vagasLanes      Lane[]
+  createdAt       DateTime @default(now())
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

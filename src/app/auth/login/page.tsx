@@ -27,7 +27,9 @@ export default function LoginPage() {
       if (result?.error) {
         setErro('Usuário ou senha incorretos');
       } else {
-        router.push('/inicio');
+        const redirectParam = new URLSearchParams(window.location.search).get('redirect');
+        const destino = redirectParam && redirectParam.startsWith('/') ? redirectParam : '/inicio';
+        router.push(destino);
       }
     } catch {
       setErro('Erro de conexão');

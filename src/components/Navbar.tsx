@@ -39,19 +39,21 @@ export function Navbar() {
 
           {/* Links — desktop */}
           <div className="hidden items-center gap-8 md:flex md:gap-12">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-3 py-2 text-xs font-bold uppercase tracking-[0.15em] transition-colors ${
-                  isActive(link.href)
-                    ? 'text-cyan'
-                    : 'text-text-muted hover:text-text-main'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const ehEquipe = link.href === '/equipes';
+              const cls = isActive(link.href)
+                ? (ehEquipe ? 'text-pink-subtle' : 'text-cyan')
+                : (ehEquipe ? 'text-text-muted hover:text-pink-subtle' : 'text-text-muted hover:text-cyan');
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-3 py-2 text-xs font-bold uppercase tracking-[0.15em] transition-colors ${cls}`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
         </div>
 
@@ -104,20 +106,24 @@ export function Navbar() {
       <div className={`${menuAberto ? 'max-h-96 border-t border-cyan/10' : 'max-h-0'} overflow-hidden transition-all duration-200 md:hidden`}>
         <div className="flex flex-col gap-2 px-6 py-4">
           <div className="flex flex-col gap-1">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuAberto(false)}
-                className={`rounded-lg px-4 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors ${
-                  isActive(link.href)
-                    ? 'bg-cyan-dim text-cyan border border-cyan/20'
-                    : 'text-text-muted hover:bg-navy-light border border-transparent'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const ehEquipe = link.href === '/equipes';
+              const cls = isActive(link.href)
+                ? (ehEquipe
+                    ? 'bg-pink-subtle/10 text-pink-subtle border border-pink-subtle/20'
+                    : 'bg-cyan-dim text-cyan border border-cyan/20')
+                : 'text-text-muted hover:bg-navy-light border border-transparent';
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuAberto(false)}
+                  className={`rounded-lg px-4 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors ${cls}`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="mt-1 rounded-xl border border-cyan/10 bg-navy-light p-3">
