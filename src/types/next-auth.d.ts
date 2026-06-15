@@ -12,7 +12,6 @@ declare module 'next-auth' {
       discordLinked: boolean;
     };
   }
-
   interface User {
     id: string;
     username: string;

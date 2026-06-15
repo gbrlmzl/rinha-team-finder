@@ -32,12 +32,14 @@ enum StatusCandidatura {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  password  String? // opcional: contas criadas via login do Discord não têm senha
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  username    String   @unique
+  password    String?  // vira opcional (quem loga só pelo Discord não tem senha)
+  role        Role     @default(USER)
+  discordId   String?  @unique
+  discordTag  String?  // ex: "username#0000" ou só "username" (Discord novo)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Vínculo real do Discord (OAuth). A verdade do contato passa a ser o discordId,
   // não mais o texto livre que ficava em FreeAgent/Equipe.

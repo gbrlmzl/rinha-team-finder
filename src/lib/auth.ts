@@ -1,6 +1,7 @@
 import { NextAuthOptions, Account, Profile } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import DiscordProvider from 'next-auth/providers/discord';
+import DiscordProvider from 'next-auth/providers/discord';
 import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
 import { encryptToken, addUserToGuild } from './discord';
@@ -94,13 +95,10 @@ export const authOptions: NextAuthOptions = {
         if (!user || !user.password) return null;
 
         const senhaCorreta = await bcrypt.compare(credentials.password, user.password);
+        const senhaCorreta = await bcrypt.compare(credentials.password, user.password);
         if (!senhaCorreta) return null;
 
-        return {
-          id: user.id,
-          username: user.username,
-          role: user.role,
-        };
+        return { id: user.id, username: user.username, role: user.role };
       },
     }),
     DiscordProvider({
@@ -109,6 +107,7 @@ export const authOptions: NextAuthOptions = {
       authorization: { params: { scope: 'identify guilds.join' } },
     }),
   ],
+
   callbacks: {
     async jwt({ token, user, account, profile, trigger }) {
       // Login via Credentials
@@ -141,6 +140,7 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
+
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
@@ -153,11 +153,8 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  pages: {
-    signIn: '/auth/login',
-  },
-  session: {
-    strategy: 'jwt',
-  },
+
+  pages: { signIn: '/auth/login' },
+  session: { strategy: 'jwt' },
   secret: process.env.NEXTAUTH_SECRET,
 };
