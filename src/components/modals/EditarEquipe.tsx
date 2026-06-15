@@ -16,7 +16,6 @@ interface EditarEquipeProps {
     id: string;
     nome: string;
     nicknameCapitao: string;
-    discord: string;
     vagasLanes: Lane[];
   };
 }
@@ -26,7 +25,6 @@ const MAX_VAGAS = 5;
 export function EditarEquipe({ open, onClose, onSuccess, equipe }: EditarEquipeProps) {
   const [nome, setNome] = useState(equipe.nome);
   const [nicknameCapitao, setNicknameCapitao] = useState(equipe.nicknameCapitao);
-  const [discord, setDiscord] = useState(equipe.discord);
   const [vagasLanes, setVagasLanes] = useState<Lane[]>([...equipe.vagasLanes]);
   const [adicionandoVaga, setAdicionandoVaga] = useState(false);
   const [erro, setErro] = useState('');
@@ -42,7 +40,7 @@ export function EditarEquipe({ open, onClose, onSuccess, equipe }: EditarEquipeP
 
   const handleSubmit = async () => {
     setErro('');
-    if (!nome.trim() || !nicknameCapitao.trim() || !discord.trim()) { setErro('Preencha todos os campos obrigatórios.'); return; }
+    if (!nome.trim() || !nicknameCapitao.trim()) { setErro('Preencha todos os campos obrigatórios.'); return; }
     if (!isNicknameValido(nicknameCapitao)) { setErro('Nickname do capitão inválido. Use o formato Nome#TAG (ex.: Chico kit lasca#Chico).'); return; }
     if (vagasLanes.length === 0) { setErro('Adicione ao menos uma vaga aberta.'); return; }
 
@@ -51,7 +49,7 @@ export function EditarEquipe({ open, onClose, onSuccess, equipe }: EditarEquipeP
       const res = await fetch(`/api/equipes/${equipe.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: nome.trim(), nicknameCapitao: nicknameCapitao.trim(), discord: discord.trim(), vagasLanes }),
+        body: JSON.stringify({ nome: nome.trim(), nicknameCapitao: nicknameCapitao.trim(), vagasLanes }),
       });
       if (!res.ok) { const data = await res.json(); setErro(data.erro || 'Erro ao atualizar.'); return; }
 
@@ -84,12 +82,6 @@ export function EditarEquipe({ open, onClose, onSuccess, equipe }: EditarEquipeP
             <input type="text" value={nicknameCapitao} onChange={(e) => setNicknameCapitao(e.target.value)} placeholder="Chico kit lasca#Chico"
               className="w-full px-4 py-2.5 rounded-lg bg-input-bg border border-input-border text-text-main placeholder-text-muted/50 focus:outline-none transition-colors" />
             <p className="mt-1.5 text-[11px] text-text-muted/70 font-light">{NICKNAME_HINT}</p>
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-text-muted mb-1.5">Usuário do Discord do Capitão</label>
-            <input type="text" value={discord} onChange={(e) => setDiscord(e.target.value)} maxLength={37} placeholder="usuario_discord"
-              className="w-full px-4 py-2.5 rounded-lg bg-input-bg border border-input-border text-text-main placeholder-text-muted/50 focus:outline-none transition-colors" />
           </div>
 
           <div className="border-t border-pink-subtle/10 pt-4">

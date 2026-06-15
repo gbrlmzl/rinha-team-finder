@@ -20,16 +20,36 @@ enum Lane {
   FILL
 }
 
+enum StatusEquipe {
+  ABERTA
+  COMPLETA
+}
+
+enum StatusCandidatura {
+  PENDENTE
+  ACEITA
+  RECUSADA
+}
+
 model User {
   id        String   @id @default(cuid())
   username  String   @unique
-  password  String
+  password  String? // opcional: contas criadas via login do Discord não têm senha
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  freeAgents FreeAgent[]
-  equipes    Equipe[]
+  // Vínculo real do Discord (OAuth). A verdade do contato passa a ser o discordId,
+  // não mais o texto livre que ficava em FreeAgent/Equipe.
+  discordId           String?   @unique // snowflake real (essencial p/ o bot)
+  discordUsername     String? // para exibição (global_name ou username)
+  discordAccessToken  String? // OAuth (guilds.join) — guardado cifrado
+  discordRefreshToken String? // OAuth — guardado cifrado
+  discordTokenExpires DateTime?
+
+  freeAgents   FreeAgent[]
+  equipes      Equipe[]
+  candidaturas Candidatura[]
 }
 
 model FreeAgent {
@@ -37,7 +57,6 @@ model FreeAgent {
   nickname       String
   lanePrincipal  Lane
   laneSecundaria Lane?
-  discord        String
   createdAt      DateTime @default(now())
 
   userId String
@@ -45,13 +64,32 @@ model FreeAgent {
 }
 
 model Equipe {
-  id              String   @id @default(cuid())
-  nome            String
-  nicknameCapitao String
-  discord         String
-  vagasLanes      Lane[]
-  createdAt       DateTime @default(now())
+  id               String       @id @default(cuid())
+  nome             String
+  nicknameCapitao  String
+  vagasLanes       Lane[]
+  discordChannelId String? // canal privado da equipe no Discord
+  status           StatusEquipe @default(ABERTA)
+  createdAt        DateTime     @default(now())
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  candidaturas Candidatura[]
+}
+
+model Candidatura {
+  id        String            @id @default(cuid())
+  lane      Lane // vaga (lane) pretendida
+  status    StatusCandidatura @default(PENDENTE)
+  createdAt DateTime          @default(now())
+
+  equipeId String
+  equipe   Equipe @relation(fields: [equipeId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Idempotência: um mesmo usuário não duplica o pedido para a mesma vaga.
+  @@unique([equipeId, userId, lane])
 }

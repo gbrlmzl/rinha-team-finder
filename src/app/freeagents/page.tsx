@@ -36,6 +36,8 @@ export default function FreeAgentsPage() {
   };
 
   useEffect(() => {
+    // Carrega os dados na montagem (setState ocorre só após o await do fetch).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchFreeAgents();
   }, []);
 
@@ -72,7 +74,7 @@ export default function FreeAgentsPage() {
               nickname={fa.nickname}
               lanePrincipal={fa.lanePrincipal}
               laneSecundaria={fa.laneSecundaria}
-              discord={fa.discord}
+              discordUsername={fa.discordUsername}
               userId={fa.userId}
               onDelete={fetchFreeAgents}
             />

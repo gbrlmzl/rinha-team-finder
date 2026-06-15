@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { Lane } from '@/types';
 import { PositionSelector } from '@/components/PositionSelector';
 import { ModalSucesso } from '@/components/modals/ModalSucesso';
+import { VincularDiscordGate } from '@/components/modals/VincularDiscordGate';
 import { isNicknameValido, NICKNAME_HINT } from '@/constants/links';
 
 interface CadastroFreeAgentProps {
@@ -13,22 +15,27 @@ interface CadastroFreeAgentProps {
 }
 
 export function CadastroFreeAgent({ open, onClose, onSuccess }: CadastroFreeAgentProps) {
+  const { data: session } = useSession();
   const [nickname, setNickname] = useState('');
   const [lanePrincipal, setLanePrincipal] = useState<Lane | null>(null);
   const [laneSecundaria, setLaneSecundaria] = useState<Lane | null>(null);
-  const [discord, setDiscord] = useState('');
   const [erro, setErro] = useState('');
   const [enviando, setEnviando] = useState(false);
   const [mostrarSucesso, setMostrarSucesso] = useState(false);
 
   if (!open && !mostrarSucesso) return null;
 
+  // Vincular o Discord é pré-requisito para se cadastrar.
+  if (open && session?.user && !session.user.discordLinked) {
+    return <VincularDiscordGate onClose={onClose} acao="se cadastrar como Free Agent" />;
+  }
+
   const ehFill = lanePrincipal === 'FILL';
 
   const handleSubmit = async () => {
     setErro('');
 
-    if (!nickname.trim() || !lanePrincipal || !discord.trim()) {
+    if (!nickname.trim() || !lanePrincipal) {
       setErro('Todos os campos são obrigatórios.');
       return;
     }
@@ -55,7 +62,7 @@ export function CadastroFreeAgent({ open, onClose, onSuccess }: CadastroFreeAgen
       const res = await fetch('/api/free-agents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname: nickname.trim(), lanePrincipal, laneSecundaria: secundaria, discord: discord.trim() }),
+        body: JSON.stringify({ nickname: nickname.trim(), lanePrincipal, laneSecundaria: secundaria }),
       });
 
       if (!res.ok) {
@@ -67,7 +74,6 @@ export function CadastroFreeAgent({ open, onClose, onSuccess }: CadastroFreeAgen
       setNickname('');
       setLanePrincipal(null);
       setLaneSecundaria(null);
-      setDiscord('');
       onSuccess();
       onClose();
       setMostrarSucesso(true);
@@ -130,12 +136,6 @@ export function CadastroFreeAgent({ open, onClose, onSuccess }: CadastroFreeAgen
                 Como Fill, você joga qualquer rota — sem necessidade de secundária.
               </p>
             )}
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-text-muted mb-1.5">Usuário do Discord</label>
-            <input type="text" value={discord} onChange={(e) => setDiscord(e.target.value)} maxLength={37} placeholder="usuario_discord"
-              className="w-full px-4 py-2.5 rounded-lg bg-input-bg border border-input-border text-text-main placeholder-text-muted/50 focus:outline-none transition-colors" />
           </div>
 
           {erro && <p className="text-pink-subtle text-sm bg-pink-subtle/10 border border-pink-subtle/20 rounded-lg px-3 py-2">{erro}</p>}
