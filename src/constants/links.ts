@@ -7,7 +7,7 @@
 
 // Convite fixo do servidor do Discord (botão dos cards e menu da home).
 // TODO: futuramente isso pode virar um link individual gerado por bot.
-export const DISCORD_INVITE_URL = 'https://discord.gg/Jehpt4dsx';
+export const DISCORD_INVITE_URL = 'https://discord.gg/DGVwHrgt4Y';
 
 // Grupo do WhatsApp da comunidade (apenas link de convite do grupo — não expõe
 // números individuais dos usuários). Exibido no menu da home.

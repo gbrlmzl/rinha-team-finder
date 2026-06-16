@@ -73,63 +73,64 @@ export default function InicioPage() {
   };
 
   return (
-    <main className="relative flex flex-1 flex-col items-center overflow-hidden px-4 py-12 pt-16 sm:pt-20">
-      {/* Orbes de luz (glow) no fundo */}
-      <div aria-hidden className="pointer-events-none absolute -left-40 -top-40 h-[420px] w-[420px] rounded-full bg-cyan/20 blur-[150px]" />
-      <div aria-hidden className="pointer-events-none absolute -right-40 -top-24 h-[420px] w-[420px] rounded-full bg-pink-subtle/20 blur-[150px]" />
+    <main className="relative flex flex-1 flex-col items-center overflow-hidden px-4 pb-10 pt-8 sm:pt-10">
+      {/* Orbes de luz no fundo */}
+      <div aria-hidden className="pointer-events-none absolute -left-40 top-0 h-[500px] w-[500px] rounded-full bg-cyan/15 blur-[160px]" />
+      <div aria-hidden className="pointer-events-none absolute -right-40 top-20 h-[500px] w-[500px] rounded-full bg-pink-subtle/15 blur-[160px]" />
 
-      {/* Hero */}
-      <section className="relative z-10 mb-14 flex flex-col items-center text-center">
-      <Image src="/assets/imgs/rinhaLogoNew.png" alt="Rinha do Campus IV" width={300} height={300} />
+      {/* ── Cabeçalho compacto: logo + título + badge lado a lado no desktop ── */}
+      <header className="relative z-10 mb-8 w-full max-w-5xl sm:mb-10">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-6">
+          {/* Logo */}
+          <div className="shrink-0">
+            <Image
+              src="/assets/imgs/rinhaLogoNew.png"
+              alt="Rinha do Campus IV"
+              width={88}
+              height={88}
+              className="sm:h-[100px] sm:w-[100px]"
+              priority
+            />
+          </div>
 
+          {/* Título + badge + descrição */}
+          <div className="flex flex-col items-center gap-2 text-center sm:items-start sm:text-left">
+            <h1 className="font-display text-4xl font-extrabold uppercase leading-none tracking-[-0.04em] text-text-main sm:text-5xl">
+              Team Finder
+            </h1>
+            <a
+              href={TORNEIO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-cyan/30 bg-cyan-dim px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-cyan transition-colors hover:border-cyan/60 hover:bg-cyan/20"
+            >
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-cyan" />
+              </span>
+              Inscrições Abertas — Edição II
+            </a>
+            <p className="text-sm font-light text-text-muted">
+              A ferramenta oficial para conectar jogadores e equipes na{' '}
+              <strong className="font-medium text-text-main">Rinha do Campus IV</strong>.
+            </p>
+          </div>
+        </div>
+      </header>
 
-        
-        <a
-          href={TORNEIO_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 mt-3 rounded-full border border-cyan/30 bg-cyan-dim px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-cyan transition-colors hover:border-cyan/60 hover:bg-cyan/20"
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
-          </span>
-          Inscrições Abertas — Edição II
-        </a>
-        <h1 className="font-display mt-6 text-5xl font-extrabold uppercase leading-[0.9] tracking-[-0.04em] text-text-main sm:text-6xl md:text-7xl">
-          Team Finder
-          {/*
-          <span className="block bg-gradient-to-r from-cyan to-pink-subtle bg-clip-text text-transparent">
-            Line Perfeita
-          </span>
-          */}
-        </h1>
-
-
-        
-        
-        
-
-
-        <p className="mt-5 max-w-xl text-sm font-light text-text-muted sm:text-base">
-          A ferramenta oficial para conectar jogadores e formar equipes na{' '}
-          <strong className="font-medium text-text-main">Rinha do Campus IV</strong>.
-        </p>
-      </section>
-
-      {/* Split Paths */}
-      <section className="relative z-10 grid w-full max-w-5xl grid-cols-1 gap-10 md:grid-cols-2 md:gap-0">
+      {/* ── Split Paths — ocupam a maior parte da tela ── */}
+      <section className="relative z-10 grid w-full max-w-5xl flex-1 grid-cols-1 gap-5 md:grid-cols-2 md:gap-0">
         {/* Fio de luz vertical (desktop) */}
-        <div aria-hidden className="pointer-events-none absolute bottom-4 left-1/2 top-4 hidden w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-input-border to-transparent md:block" />
+        <div aria-hidden className="pointer-events-none absolute bottom-0 left-1/2 top-0 hidden w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-input-border to-transparent md:block" />
 
         {/* Jornada do Jogador (Ciano) */}
-        <div className="flex flex-col gap-4 md:pr-10">
-          <div className="mb-1 flex items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-cyan/20 bg-cyan-dim text-cyan">
-              <GamepadIcon className="h-6 w-6" />
+        <div className="flex flex-col gap-3 md:pr-8">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cyan/20 bg-cyan-dim text-cyan">
+              <GamepadIcon className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="font-display text-2xl font-extrabold uppercase tracking-[-0.02em] text-text-main">Sou um Jogador</h2>
+              <h2 className="font-display text-xl font-extrabold uppercase tracking-[-0.02em] text-text-main sm:text-2xl">Sou um Jogador</h2>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan">Buscando uma equipe</p>
             </div>
           </div>
@@ -137,40 +138,40 @@ export default function InicioPage() {
           {/* Ação primária */}
           <button
             onClick={() => handleAbrirModal('freeagent')}
-            className="group relative flex flex-col overflow-hidden rounded-2xl border border-cyan/20 bg-navy-light/60 p-6 text-left shadow-lg shadow-cyan/5 transition-all duration-200 hover:border-cyan/50 hover:bg-navy-light"
+            className="group relative flex flex-1 flex-col overflow-hidden rounded-2xl border border-cyan/20 bg-navy-light/60 p-5 text-left shadow-lg shadow-cyan/5 transition-all duration-200 hover:border-cyan/50 hover:bg-navy-light"
           >
-            <h3 className="font-display text-xl font-bold text-text-main">Cadastre-se como Free Agent</h3>
-            <p className="mt-2 text-sm font-light leading-relaxed text-text-muted">
-              Informe suas melhores rotas  e mostre que você está pronto para receber propostas de equipes.
+            <h3 className="font-display text-lg font-bold text-text-main sm:text-xl">Cadastre-se como Free Agent</h3>
+            <p className="mt-2 flex-1 text-sm font-light leading-relaxed text-text-muted">
+              Informe suas melhores rotas e mostre que você está pronto para receber propostas de equipes.
             </p>
-            <span className="mt-6 inline-flex items-center justify-center rounded-lg bg-cyan-dim px-4 py-3 text-xs font-bold uppercase tracking-widest text-cyan transition-colors group-hover:bg-cyan group-hover:text-navy">
+            <span className="mt-5 inline-flex items-center justify-center rounded-lg bg-cyan-dim px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-cyan transition-colors group-hover:bg-cyan group-hover:text-navy">
               Cadastrar Free Agent
             </span>
           </button>
 
-          {/* Ação secundária (slim row) */}
+          {/* Ação secundária */}
           <button
             onClick={() => router.push('/equipes')}
-            className="group flex items-center justify-between gap-4 rounded-xl border border-cyan/10 bg-navy-light/40 px-5 py-4 text-left transition-all duration-200 hover:border-cyan/30 hover:bg-cyan-dim"
+            className="group flex items-center justify-between gap-4 rounded-xl border border-cyan/10 bg-navy-light/40 px-5 py-3.5 text-left transition-all duration-200 hover:border-cyan/30 hover:bg-cyan-dim"
           >
             <div className="min-w-0">
               <h4 className="font-display text-sm font-bold uppercase tracking-wide text-text-main">Explorar Equipes</h4>
               <p className="text-xs font-light text-text-muted">Veja quem está recrutando</p>
             </div>
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-cyan/20 bg-navy text-cyan transition-colors group-hover:bg-cyan group-hover:text-navy">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-cyan/20 bg-navy text-cyan transition-colors group-hover:bg-cyan group-hover:text-navy">
               <SearchIcon className="h-4 w-4" />
             </div>
           </button>
         </div>
 
         {/* Jornada da Equipe (Rosa) */}
-        <div className="flex flex-col gap-4 md:pl-10">
-          <div className="mb-1 flex items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-pink-subtle/20 bg-pink-subtle/10 text-pink-subtle">
-              <UsersIcon className="h-6 w-6" />
+        <div className="flex flex-col gap-3 md:pl-8">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-pink-subtle/20 bg-pink-subtle/10 text-pink-subtle">
+              <UsersIcon className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="font-display text-2xl font-extrabold uppercase tracking-[-0.02em] text-text-main">Sou uma Equipe</h2>
+              <h2 className="font-display text-xl font-extrabold uppercase tracking-[-0.02em] text-text-main sm:text-2xl">Sou uma Equipe</h2>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-pink-subtle">Buscando jogadores</p>
             </div>
           </div>
@@ -178,38 +179,38 @@ export default function InicioPage() {
           {/* Ação primária */}
           <button
             onClick={() => handleAbrirModal('equipe')}
-            className="group relative flex flex-col overflow-hidden rounded-2xl border border-pink-subtle/20 bg-navy-light/60 p-6 text-left shadow-lg shadow-pink-subtle/5 transition-all duration-200 hover:border-pink-subtle/50 hover:bg-navy-light"
+            className="group relative flex flex-1 flex-col overflow-hidden rounded-2xl border border-pink-subtle/20 bg-navy-light/60 p-5 text-left shadow-lg shadow-pink-subtle/5 transition-all duration-200 hover:border-pink-subtle/50 hover:bg-navy-light"
           >
-            <h3 className="font-display text-xl font-bold text-text-main">Registrar Line-up e Vagas</h3>
-            <p className="mt-2 text-sm font-light leading-relaxed text-text-muted">
+            <h3 className="font-display text-lg font-bold text-text-main sm:text-xl">Registrar Line-up e Vagas</h3>
+            <p className="mt-2 flex-1 text-sm font-light leading-relaxed text-text-muted">
               Cadastre sua equipe, publique as posições que faltam e encontre jogadores com a sinergia perfeita.
             </p>
-            <span className="mt-6 inline-flex items-center justify-center rounded-lg bg-pink-subtle/10 px-4 py-3 text-xs font-bold uppercase tracking-widest text-pink-subtle transition-colors group-hover:bg-pink-subtle group-hover:text-navy">
+            <span className="mt-5 inline-flex items-center justify-center rounded-lg bg-pink-subtle/10 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-pink-subtle transition-colors group-hover:bg-pink-subtle group-hover:text-navy">
               Cadastrar Equipe
             </span>
           </button>
 
-          {/* Ação secundária (slim row) */}
+          {/* Ação secundária */}
           <button
             onClick={() => router.push('/freeagents')}
-            className="group flex items-center justify-between gap-4 rounded-xl border border-pink-subtle/10 bg-navy-light/40 px-5 py-4 text-left transition-all duration-200 hover:border-pink-subtle/30 hover:bg-pink-subtle/10"
+            className="group flex items-center justify-between gap-4 rounded-xl border border-pink-subtle/10 bg-navy-light/40 px-5 py-3.5 text-left transition-all duration-200 hover:border-pink-subtle/30 hover:bg-pink-subtle/10"
           >
             <div className="min-w-0">
               <h4 className="font-display text-sm font-bold uppercase tracking-wide text-text-main">Buscar Free Agents</h4>
               <p className="text-xs font-light text-text-muted">Encontre jogadores disponíveis</p>
             </div>
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-pink-subtle/20 bg-navy text-pink-subtle transition-colors group-hover:bg-pink-subtle group-hover:text-navy">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-pink-subtle/20 bg-navy text-pink-subtle transition-colors group-hover:bg-pink-subtle group-hover:text-navy">
               <SearchIcon className="h-4 w-4" />
             </div>
           </button>
         </div>
       </section>
 
-      {/* Comunidades (mini-rodapé) */}
-      <section className="relative z-10 mt-16 w-full max-w-3xl">
-        <div className="mb-6 flex items-center gap-4">
+      {/* Comunidades */}
+      <section className="relative z-10 mt-8 w-full max-w-3xl">
+        <div className="mb-4 flex items-center gap-4">
           <div className="h-px flex-1 bg-input-border" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-text-muted/60">Participe das comunidades oficiais</span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-text-muted/60">Comunidades oficiais</span>
           <div className="h-px flex-1 bg-input-border" />
         </div>
 

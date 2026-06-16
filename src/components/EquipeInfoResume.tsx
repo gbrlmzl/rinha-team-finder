@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -13,6 +13,8 @@ import { SolicitarEntrada } from '@/components/modals/SolicitarEntrada';
 import { CandidaturasRecebidas } from '@/components/modals/CandidaturasRecebidas';
 import { VincularDiscordGate } from '@/components/modals/VincularDiscordGate';
 import { DiscordChip } from '@/components/DiscordChip';
+
+type StatusCandidatura = 'PENDENTE' | 'ACEITA' | 'RECUSADA';
 
 interface EquipeInfoResumeProps extends EquipeData {
   onDelete?: () => void;
@@ -43,6 +45,7 @@ export function EquipeInfoResume({
   const [modalSolicitar, setModalSolicitar] = useState(false);
   const [modalVincular, setModalVincular] = useState(false);
   const [modalCandidaturas, setModalCandidaturas] = useState(false);
+  const [statusCandidatura, setStatusCandidatura] = useState<StatusCandidatura | null>(null);
 
   const vagasVisiveis = vagasLanes.map(getPosition).filter(Boolean);
   const capitaoUrl = buildLeagueOfGraphsUrl(nicknameCapitao);
@@ -53,6 +56,21 @@ export function EquipeInfoResume({
   const canDelete = isOwner || isAdmin;
   const canEdit = isOwner;
   const podeSolicitar = !isOwner && vagasVisiveis.length > 0;
+
+  // Verifica se o usuário já tem candidatura aceita nesta equipe.
+  useEffect(() => {
+    if (!isLoggedIn || isOwner) return;
+    fetch(`/api/equipes/${id}/solicitar`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const lista: { lane: Lane; status: StatusCandidatura }[] = data?.candidaturas ?? [];
+        if (lista.some((c) => c.status === 'ACEITA')) setStatusCandidatura('ACEITA');
+        else if (lista.length > 0) setStatusCandidatura(lista[lista.length - 1].status);
+        else setStatusCandidatura(null);
+      })
+      .catch(() => setStatusCandidatura(null));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn, isOwner, id]);
 
   const irParaLogin = () => router.push(`/auth/login?redirect=${pathname}`);
 
@@ -134,7 +152,13 @@ export function EquipeInfoResume({
 
           {(canEdit || canDelete || podeSolicitar) && (
             <div className="flex gap-2 sm:flex-col sm:items-end">
-              {podeSolicitar && (
+              {podeSolicitar && statusCandidatura === 'ACEITA' && (
+                <span className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-xs font-bold uppercase tracking-wider text-emerald-400">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                  Aceita
+                </span>
+              )}
+              {podeSolicitar && statusCandidatura !== 'ACEITA' && (
                 <button
                   onClick={handleSolicitar}
                   className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-pink-subtle px-3 py-2 text-xs font-bold uppercase tracking-wider text-navy transition-colors hover:bg-pink-subtle/85"

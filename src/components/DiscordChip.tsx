@@ -32,7 +32,7 @@ export function DiscordChip({ username, isLoggedIn, onRequireLogin }: DiscordChi
         <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
         </svg>
-        Discord: entre para ver
+        entre para ver
       </button>
     );
   }
@@ -42,7 +42,7 @@ export function DiscordChip({ username, isLoggedIn, onRequireLogin }: DiscordChi
     return (
       <span className={`${CHIP_BASE} opacity-60`} title="Este usuário ainda não vinculou o Discord">
         <DiscordIcon />
-        Discord não vinculado
+        não vinculado
       </span>
     );
   }
@@ -64,7 +64,7 @@ export function DiscordChip({ username, isLoggedIn, onRequireLogin }: DiscordChi
       title="Clique para copiar o usuário do Discord"
     >
       <DiscordIcon />
-      Discord: {username}
+      {username}
       {copiado ? (
         <>
           <svg className="h-3.5 w-3.5 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
