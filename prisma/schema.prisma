@@ -43,12 +43,10 @@ model User {
 
   // Vínculo real do Discord (OAuth). A verdade do contato passa a ser o discordId,
   // não mais o texto livre que ficava em FreeAgent/Equipe.
-  discordId           String?   @unique // snowflake real (essencial p/ o bot)
   discordUsername     String? // para exibição (global_name ou username)
   discordAccessToken  String? // OAuth (guilds.join) — guardado cifrado
   discordRefreshToken String? // OAuth — guardado cifrado
   discordTokenExpires DateTime?
-
   freeAgents   FreeAgent[]
   equipes      Equipe[]
   candidaturas Candidatura[]

@@ -1,7 +1,6 @@
 import { NextAuthOptions, Account, Profile } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import DiscordProvider from 'next-auth/providers/discord';
-import DiscordProvider from 'next-auth/providers/discord';
 import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
 import { encryptToken, addUserToGuild } from './discord';
@@ -94,7 +93,6 @@ export const authOptions: NextAuthOptions = {
         // Contas criadas via Discord não têm senha local — não logam por aqui.
         if (!user || !user.password) return null;
 
-        const senhaCorreta = await bcrypt.compare(credentials.password, user.password);
         const senhaCorreta = await bcrypt.compare(credentials.password, user.password);
         if (!senhaCorreta) return null;
 

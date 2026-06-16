@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { CadastroFreeAgent } from '@/components/modals/CadastroFreeAgent';
 import { CadastroEquipeVaga } from '@/components/modals/CadastroEquipeVaga';
 import { DISCORD_INVITE_URL, WHATSAPP_GROUP_URL } from '@/constants/links';
+import Image from 'next/image';
 
 const TORNEIO_URL = 'https://rinhacampusiv.org/lol/torneios/rinha-do-campus-iv-edicao-ii';
 
@@ -79,11 +80,15 @@ export default function InicioPage() {
 
       {/* Hero */}
       <section className="relative z-10 mb-14 flex flex-col items-center text-center">
+      <Image src="/assets/imgs/rinhaLogoNew.png" alt="Rinha do Campus IV" width={300} height={300} />
+
+
+        
         <a
           href={TORNEIO_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full border border-cyan/30 bg-cyan-dim px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-cyan transition-colors hover:border-cyan/60 hover:bg-cyan/20"
+          className="inline-flex items-center gap-2 mt-3 rounded-full border border-cyan/30 bg-cyan-dim px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-cyan transition-colors hover:border-cyan/60 hover:bg-cyan/20"
         >
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
@@ -91,17 +96,24 @@ export default function InicioPage() {
           </span>
           Inscrições Abertas — Edição II
         </a>
-
         <h1 className="font-display mt-6 text-5xl font-extrabold uppercase leading-[0.9] tracking-[-0.04em] text-text-main sm:text-6xl md:text-7xl">
-          Monte sua{' '}
+          Team Finder
+          {/*
           <span className="block bg-gradient-to-r from-cyan to-pink-subtle bg-clip-text text-transparent">
             Line Perfeita
           </span>
+          */}
         </h1>
 
+
+        
+        
+        
+
+
         <p className="mt-5 max-w-xl text-sm font-light text-text-muted sm:text-base">
-          O ecossistema oficial para conectar talentos e formar equipes na{' '}
-          <strong className="font-medium text-text-main">Rinha do Campus IV</strong>. Escolha sua jornada abaixo para começar.
+          A ferramenta oficial para conectar jogadores e formar equipes na{' '}
+          <strong className="font-medium text-text-main">Rinha do Campus IV</strong>.
         </p>
       </section>
 
@@ -117,8 +129,8 @@ export default function InicioPage() {
               <GamepadIcon className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="font-display text-2xl font-extrabold uppercase tracking-[-0.02em] text-text-main">Sou Jogador</h2>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan">Disponível para jogar</p>
+              <h2 className="font-display text-2xl font-extrabold uppercase tracking-[-0.02em] text-text-main">Sou um Jogador</h2>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan">Buscando uma equipe</p>
             </div>
           </div>
 
@@ -127,12 +139,12 @@ export default function InicioPage() {
             onClick={() => handleAbrirModal('freeagent')}
             className="group relative flex flex-col overflow-hidden rounded-2xl border border-cyan/20 bg-navy-light/60 p-6 text-left shadow-lg shadow-cyan/5 transition-all duration-200 hover:border-cyan/50 hover:bg-navy-light"
           >
-            <h3 className="font-display text-xl font-bold text-text-main">Criar Perfil de Free Agent</h3>
+            <h3 className="font-display text-xl font-bold text-text-main">Cadastre-se como Free Agent</h3>
             <p className="mt-2 text-sm font-light leading-relaxed text-text-muted">
-              Destaque suas melhores rotas, seu elo e mostre que você está pronto para receber propostas de equipes competitivas.
+              Informe suas melhores rotas  e mostre que você está pronto para receber propostas de equipes.
             </p>
             <span className="mt-6 inline-flex items-center justify-center rounded-lg bg-cyan-dim px-4 py-3 text-xs font-bold uppercase tracking-widest text-cyan transition-colors group-hover:bg-cyan group-hover:text-navy">
-              Cadastrar Perfil
+              Cadastrar Free Agent
             </span>
           </button>
 
@@ -158,8 +170,8 @@ export default function InicioPage() {
               <UsersIcon className="h-6 w-6" />
             </div>
             <div>
-              <h2 className="font-display text-2xl font-extrabold uppercase tracking-[-0.02em] text-text-main">Sou Equipe</h2>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-pink-subtle">Buscando talentos</p>
+              <h2 className="font-display text-2xl font-extrabold uppercase tracking-[-0.02em] text-text-main">Sou uma Equipe</h2>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-pink-subtle">Buscando jogadores</p>
             </div>
           </div>
 
@@ -170,10 +182,10 @@ export default function InicioPage() {
           >
             <h3 className="font-display text-xl font-bold text-text-main">Registrar Line-up e Vagas</h3>
             <p className="mt-2 text-sm font-light leading-relaxed text-text-muted">
-              Cadastre sua equipe, publique as posições que faltam no roster e encontre os agentes com sinergia perfeita.
+              Cadastre sua equipe, publique as posições que faltam e encontre jogadores com a sinergia perfeita.
             </p>
             <span className="mt-6 inline-flex items-center justify-center rounded-lg bg-pink-subtle/10 px-4 py-3 text-xs font-bold uppercase tracking-widest text-pink-subtle transition-colors group-hover:bg-pink-subtle group-hover:text-navy">
-              Anunciar Equipe
+              Cadastrar Equipe
             </span>
           </button>
 
@@ -184,7 +196,7 @@ export default function InicioPage() {
           >
             <div className="min-w-0">
               <h4 className="font-display text-sm font-bold uppercase tracking-wide text-text-main">Buscar Free Agents</h4>
-              <p className="text-xs font-light text-text-muted">Filtre por rota</p>
+              <p className="text-xs font-light text-text-muted">Encontre jogadores disponíveis</p>
             </div>
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-pink-subtle/20 bg-navy text-pink-subtle transition-colors group-hover:bg-pink-subtle group-hover:text-navy">
               <SearchIcon className="h-4 w-4" />
@@ -209,7 +221,7 @@ export default function InicioPage() {
             className="inline-flex w-full items-center justify-center gap-2.5 rounded-2xl border border-[#5865F2]/40 bg-[#5865F2]/10 px-6 py-3 text-sm font-bold text-[#8b93f8] transition-all duration-200 hover:bg-[#5865F2] hover:text-white sm:w-auto"
           >
             <DiscordIcon className="h-5 w-5" />
-            Servidor do Discord
+            Rinha do Campus IV
           </a>
           <a
             href={WHATSAPP_GROUP_URL}
@@ -218,7 +230,7 @@ export default function InicioPage() {
             className="inline-flex w-full items-center justify-center gap-2.5 rounded-2xl border border-[#25D366]/40 bg-[#25D366]/10 px-6 py-3 text-sm font-bold text-[#3ddc7f] transition-all duration-200 hover:bg-[#25D366] hover:text-navy sm:w-auto"
           >
             <WhatsAppIcon className="h-5 w-5" />
-            Grupo do WhatsApp
+            Grupo de Free Agents
           </a>
         </div>
       </section>
