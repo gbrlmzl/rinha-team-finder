@@ -42,7 +42,7 @@ async function sincronizarLoginDiscord(
   account: Account | null
 ): Promise<{ id: string; username: string; role: string }> {
   const discordId = profile.id;
-  const discordUsername = profile.global_name ?? profile.username;
+  const discordUsername = profile.username;
 
   const dadosToken = account?.access_token
     ? {

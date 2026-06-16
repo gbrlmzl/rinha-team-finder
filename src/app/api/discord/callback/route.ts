@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
       where: { id: session.user.id },
       data: {
         discordId: discordUser.id,
-        discordUsername: discordUser.global_name ?? discordUser.username,
+        discordUsername: discordUser.username,
         discordAccessToken: encryptToken(token.access_token),
         discordRefreshToken: encryptToken(token.refresh_token),
         discordTokenExpires: new Date(Date.now() + token.expires_in * 1000),

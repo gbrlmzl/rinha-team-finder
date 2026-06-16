@@ -11,7 +11,7 @@ function labelDaLane(lane: Lane): string {
   return PLAYER_POSITIONS.find((p) => p.key === lane)?.label ?? lane;
 }
 
-// GET /api/equipes/[id]/solicitar — lanes que o usuário logado já solicitou nesta equipe.
+// GET /api/equipes/[id]/solicitar — candidaturas do usuário logado nesta equipe (com status).
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { session, error } = await getSessionOrUnauthorized();
   if (error) return error;
@@ -20,10 +20,10 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
   const candidaturas = await prisma.candidatura.findMany({
     where: { equipeId: id, userId: session!.user.id },
-    select: { lane: true },
+    select: { lane: true, status: true },
   });
 
-  return NextResponse.json({ lanesSolicitadas: candidaturas.map((c) => c.lane) });
+  return NextResponse.json({ candidaturas });
 }
 
 // POST /api/equipes/[id]/solicitar — free agent solicita entrada para uma vaga.
@@ -75,6 +75,26 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json(
       { erro: 'Essa vaga não está mais disponível.' },
       { status: 409 }
+    );
+  }
+
+  // Verifica limites de solicitações: máx. 3 por equipe; bloqueio permanente após 3 recusas.
+  const candidaturasExistentes = await prisma.candidatura.findMany({
+    where: { equipeId: id, userId: session!.user.id },
+    select: { status: true, lane: true },
+  });
+  const recusadasCount = candidaturasExistentes.filter((c) => c.status === 'RECUSADA').length;
+  if (recusadasCount >= 3) {
+    return NextResponse.json(
+      { erro: 'Você foi recusado 3 vezes por esta equipe. Não é possível enviar mais solicitações.' },
+      { status: 403 }
+    );
+  }
+  const totalCandidaturas = candidaturasExistentes.length;
+  if (totalCandidaturas >= 3) {
+    return NextResponse.json(
+      { erro: 'Você atingiu o limite de 3 solicitações para esta equipe.' },
+      { status: 403 }
     );
   }
 
