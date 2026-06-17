@@ -21,7 +21,13 @@ interface DiscordConfig {
 function getDiscordConfig(): DiscordConfig {
   const clientId = process.env.DISCORD_CLIENT_ID;
   const clientSecret = process.env.DISCORD_CLIENT_SECRET;
-  const baseUrl = process.env.NEXTAUTH_URL ?? 'http://localhost:3000';
+
+  // NEXTAUTH_URL tem prioridade. Fallback: VERCEL_URL (definido automaticamente pelo Vercel,
+  // sem protocolo) ou localhost para dev local.
+  const rawBase =
+    process.env.NEXTAUTH_URL ??
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+  const baseUrl = rawBase.replace(/\/$/, ''); // remove trailing slash se houver
 
   if (!clientId || !clientSecret) {
     throw new Error('DISCORD_CLIENT_ID / DISCORD_CLIENT_SECRET não configurados.');
