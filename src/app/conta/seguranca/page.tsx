@@ -63,6 +63,19 @@ export default function SegurancaPage() {
 
   return (
     <div className="space-y-4">
+      {/* Esqueleto de carregamento enquanto verifica se a conta tem senha */}
+      {temSenha === null && (
+        <div className="rounded-2xl border border-cyan/10 bg-navy-light p-6 shadow-lg animate-pulse">
+          <div className="h-4 w-32 rounded bg-navy-lighter mb-3" />
+          <div className="h-3 w-56 rounded bg-navy-lighter mb-5" />
+          <div className="space-y-3">
+            <div className="h-9 w-full rounded-lg bg-navy-lighter" />
+            <div className="h-9 w-full rounded-lg bg-navy-lighter" />
+            <div className="h-9 w-full rounded-lg bg-navy-lighter" />
+          </div>
+        </div>
+      )}
+
       {/* Conta sem senha local (entra pelo Discord) */}
       {temSenha === false && (
         <div className="rounded-2xl border border-[#5865F2]/30 bg-navy-light p-6 shadow-lg">
@@ -74,7 +87,7 @@ export default function SegurancaPage() {
       )}
 
       {/* Alterar senha */}
-      {temSenha !== false && (
+      {temSenha === true && (
       <div className="rounded-2xl border border-cyan/10 bg-navy-light p-6 shadow-lg">
         <h2 className="font-display text-lg font-bold uppercase tracking-wide text-text-main">Alterar senha</h2>
         <p className="mt-1 text-sm font-light text-text-muted">Altere sua senha de acesso.</p>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { ModalConfirmacao } from '@/components/modals/ModalConfirmacao';
 
@@ -9,9 +9,22 @@ export default function ContasVinculadasPage() {
   const [confirmando, setConfirmando] = useState(false);
   const [desvinculando, setDesvinculando] = useState(false);
   const [aviso, setAviso] = useState('');
+  // null = carregando, true/false = resultado da API
+  const [temSenha, setTemSenha] = useState<boolean | null>(null);
 
   const vinculado = !!session?.user?.discordLinked;
   const discordUsername = session?.user?.discordUsername ?? null;
+
+  useEffect(() => {
+    fetch('/api/usuarios/me')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setTemSenha(data ? !!data.hasPassword : true))
+      .catch(() => setTemSenha(true));
+  }, []);
+
+  // Contas criadas exclusivamente pelo Discord não têm senha local —
+  // desvincular o Discord as deixaria sem nenhuma forma de autenticação.
+  const podeDesvincular = temSenha === true;
 
   const desvincular = async () => {
     setDesvinculando(true);
@@ -58,21 +71,26 @@ export default function ContasVinculadasPage() {
             </div>
           </div>
 
-          <div className="flex shrink-0 gap-2">
+          <div className="flex shrink-0 flex-col items-end gap-1.5">
             {vinculado ? (
               <>
-                <a
-                  href="/api/discord/link"
-                  className="inline-flex items-center justify-center rounded-lg border border-[#5865F2]/40 px-3 py-2 text-xs font-bold uppercase tracking-widest text-[#a5abf5] transition-colors hover:bg-[#5865F2]/15"
-                >
-                  Revincular
-                </a>
                 <button
-                  onClick={() => setConfirmando(true)}
-                  className="inline-flex items-center justify-center rounded-lg border border-pink-subtle/30 px-3 py-2 text-xs font-bold uppercase tracking-widest text-pink-subtle transition-colors hover:bg-pink-subtle/10"
+                  onClick={() => podeDesvincular && setConfirmando(true)}
+                  disabled={!podeDesvincular}
+                  title={
+                    !podeDesvincular
+                      ? 'Sua conta usa apenas o Discord para entrar. Desvincular te deixaria sem acesso.'
+                      : undefined
+                  }
+                  className="inline-flex items-center justify-center rounded-lg border border-pink-subtle/30 px-3 py-2 text-xs font-bold uppercase tracking-widest text-pink-subtle transition-colors hover:bg-pink-subtle/10 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Desvincular
                 </button>
+                {!podeDesvincular && temSenha !== null && (
+                  <p className="max-w-[200px] text-right text-[10px] leading-tight text-text-muted/70">
+                    Não é possível desvincular — esta conta usa apenas o Discord para entrar.
+                  </p>
+                )}
               </>
             ) : (
               <a
