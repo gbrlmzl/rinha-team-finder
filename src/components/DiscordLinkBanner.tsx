@@ -7,7 +7,7 @@ import { ModalSucesso } from '@/components/modals/ModalSucesso';
 const ERROS_MENSAGENS: Record<string, string> = {
   erro_login: 'Faça login antes de vincular o Discord.',
   erro_state: 'Sessão de vínculo expirada. Tente novamente.',
-  ja_vinculado: 'Esse Discord já está vinculado a outra conta.',
+  ja_vinculado: 'Este Discord já está vinculado a outra conta do site. Cada conta do Discord só pode ser vinculada a um único usuário.',
   erro: 'Não foi possível vincular o Discord. Tente novamente.',
 };
 
@@ -46,7 +46,9 @@ export function DiscordLinkBanner() {
       const mensagem = ERROS_MENSAGENS[statusDiscord] ?? ERROS_MENSAGENS.erro;
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setErroFeedback(mensagem);
-      const timer = setTimeout(() => setErroFeedback(null), 6000);
+      // Erros mais importantes ficam mais tempo na tela.
+      const duracao = statusDiscord === 'ja_vinculado' ? 10000 : 6000;
+      const timer = setTimeout(() => setErroFeedback(null), duracao);
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
